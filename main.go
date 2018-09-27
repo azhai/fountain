@@ -6,6 +6,7 @@ import (
 	"plugin"
 
 	"fountain/article"
+	"gopkg.in/russross/blackfriday.v2"
 )
 
 const VERSION = "0.39.4"
@@ -46,6 +47,8 @@ func main() {
 func Convert(source []byte, format string) []byte {
 	if format == "" {
 		return source
+	} else if format == "markdown" {
+		return blackfriday.Run(source)
 	}
 	plug, err := plugin.Open("./" + format + ".so")
 	if err != nil {

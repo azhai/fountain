@@ -12,10 +12,12 @@ buildPlugin()
 {
     NAME="$1"
     MOMENT=$(date +%FT%TZ)
-    FLAGS="-pluginpath=$NAME.so.$MOMENT"
-    $GOBUILD -buildmode=plugin --ldflags="$FLAGS" -o "$NAME.so" converter/"$NAME.go"
+    FLAGS="-s -w -pluginpath=$NAME.so.$MOMENT"
+    rm -f "$NAME.so"
+    $GOBUILD -buildmode=plugin -ldflags="$FLAGS" -o "$NAME.so" converter/"$NAME.go"
 }
 
-rm -f fountain *.so
-buildPlugin markdown
-$GOBUILD -ldflags "-w -s"
+#buildPlugin markdown
+rm -f fountain
+$GOBUILD -ldflags="-s -w"
+#goupx --strip-binary --ultra-brute fountain
