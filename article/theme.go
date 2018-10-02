@@ -43,7 +43,7 @@ func (this *Theme) GetOrCreate(name string) *template.Template {
 }
 
 func (this *Theme) AddUrlPre(dir string) string {
-	prefix := ""
+	prefix := "."
 	if len(dir) > 0 && dir != "." {
 		times := strings.Count(dir, "/") + 1
 		prefix = strings.Repeat("../", times)

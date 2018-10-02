@@ -43,7 +43,7 @@ func (this *Catelog) GetNext() string {
 	link := "下一页"
 	if node := this.Node.Next(); node != nil {
 		url := node.Value.(string)
-		link = fmt.Sprintf("<a href=\"/%s\">%s</a>", url, link)
+		link = fmt.Sprintf("<a href=\"./%s\">%s</a>", url, link)
 	}
 	return link
 }
@@ -52,7 +52,7 @@ func (this *Catelog) GetPrev() string {
 	link := "上一页"
 	if node := this.Node.Prev(); node != nil {
 		url := node.Value.(string)
-		link = fmt.Sprintf("<a href=\"/%s\">%s</a>", url, link)
+		link = fmt.Sprintf("<a href=\"./%s\">%s</a>", url, link)
 	}
 	return link
 }
