@@ -47,7 +47,7 @@ func (this *Website) InitTheme() error {
 	if this.Conf.Theme != "" {
 		theme = this.Conf.Theme
 	}
-	this.Skin.Dir = fmt.Sprintf("themes/%s/", theme)
+	this.Skin.Dir = this.RootDir + fmt.Sprintf("themes/%s/", theme)
 	this.Skin.OutDir = this.RootDir + this.Conf.Public
 	this.Skin.FuncMap["i18n"] = I18n
 	return os.MkdirAll(this.Skin.OutDir, MODE_DIR)
@@ -63,14 +63,25 @@ func (this *Website) AddArticle(blog *Article, url string) *Link {
 	return arch
 }
 
-func (this *Website) GetTargetDir(path, name string) (url string, err error) {
+func (this *Website) GetTargetDir(path, name string) string {
 	srcDir := this.RootDir + this.Conf.Source
 	pubDir := this.RootDir + this.Conf.Public
 	dir := filepath.Dir(path)[len(srcDir):]
-	url = dir + "/" + name + ".html"
+	url := dir + "/" + name + ".html"
 	this.Debug(path, "->", pubDir+url)
-	err = os.MkdirAll(pubDir+dir, MODE_DIR)
-	return
+	os.MkdirAll(pubDir+dir, MODE_DIR)
+	return url
+}
+
+func (this *Website) GetTagArchives(name string) []*Link {
+	var arches []*Link
+	if indexes, ok := this.Tags[name]; ok {
+		for _, idx := range indexes {
+			lnk := this.Archives[idx]
+			arches = append(arches, lnk)
+		}
+	}
+	return arches
 }
 
 func (this *Website) ProcFile(blog *Article, path string) error {
@@ -79,16 +90,13 @@ func (this *Website) ProcFile(blog *Article, path string) error {
 		this.Debug("ERROR:", err)
 		return err
 	}
-	url, err := this.GetTargetDir(path, name)
-	if err != nil {
-		this.Debug("ERROR:", err)
-		return err
-	}
+	url := this.GetTargetDir(path, name)
 	source := []byte(blog.Source)
 	content := this.Convert(source, blog.Format)
 	blog.Content = string(content)
 	this.AddArticle(blog, url)
-	err = this.Skin.RenderArticle(url, blog)
+	ctx := Table{"Blog": blog, "Tag": "", "Conf": this.Conf}
+	err = this.Skin.Render("article", url, ctx)
 	if err != nil {
 		this.Debug("ERROR:", err)
 	}
@@ -122,13 +130,31 @@ func (this *Website) CreateIndex(pageSize int) error {
 		cata.Site = this
 		url = cata.Node.Value.(string)
 		this.Debug("√", url)
-		err = this.Skin.Render("index", url, cata)
+		ctx := Table{"Cata": cata, "Tag": "", "Conf": this.Conf}
+		err = this.Skin.Render("index", url, ctx)
 	}
 	return err
 }
 
+func (this *Website) CreateTags() error {
+	var err error
+	pubDir := this.RootDir + this.Conf.Public
+	err = os.MkdirAll(pubDir+"tag", MODE_DIR)
+	if err != nil {
+		return err
+	}
+	for name := range this.Tags {
+		url := fmt.Sprintf("tag/%s.html", name)
+		this.Debug("√", url)
+		ctx := Table{"Site": this, "Tag": name, "Conf": this.Conf}
+		err = this.Skin.Render("tag", url, ctx)
+	}
+	return err
+
+}
+
 func (this *Website) CreateWalkFunc() filepath.WalkFunc {
-	blog := NewArticle(this)
+	blog := NewArticle()
 	return func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			this.Debug("ERROR:", err)
@@ -158,6 +184,8 @@ func (this *Website) BuildFiles() error {
 	if err == nil {
 		this.Debug("Index:")
 		this.CreateIndex(this.Conf.Limit)
+		this.Debug("Tags:")
+		this.CreateTags()
 		this.Skin.CopyAssets("static")
 	}
 	return err

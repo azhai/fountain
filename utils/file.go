@@ -47,3 +47,10 @@ func CopyDir(src, dst string) (err error) {
 	err = cmd.Run()
 	return
 }
+
+// 删除目录及子目录下所有内容
+func CleanDir(dst string) (err error) {
+	cmd := exec.Command("rm", "-rf", dst)
+	err = cmd.Run()
+	return
+}

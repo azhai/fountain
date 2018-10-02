@@ -1,0 +1,15 @@
+.*
+*.bak
+*.exe
+*.log
+*.so
+*.sublime-project
+*.sublime-workspace
+*.tmp
+*.txt
+fountain
+go.sum
+blog/
+themes/
+tests/
+vendor/

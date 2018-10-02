@@ -58,7 +58,6 @@ func (this *Catelog) GetPrev() string {
 }
 
 type Article struct {
-	Site    *Website
 	Meta    *MetaData
 	Author  *User
 	Archive *Link
@@ -67,9 +66,8 @@ type Article struct {
 	Content string
 }
 
-func NewArticle(site *Website) *Article {
+func NewArticle() *Article {
 	return &Article{
-		Site: site,
 		Meta: &MetaData{
 			Date: time.Now().Format("2006-01-02"),
 		},

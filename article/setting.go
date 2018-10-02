@@ -13,20 +13,21 @@ func YamlParse(data []byte, storage interface{}) error {
 	return yaml.Unmarshal(data, storage)
 }
 
-type Section map[string]interface{}
+type Table map[string]interface{}
 
 type Setting struct {
-	Title   string
-	Logo    string
-	Lang    string
-	Source  string
-	Public  string
-	Theme   string
-	Port    uint
-	Limit   int
-	Authors map[string]*User
-	Layout  *Section
-	Repo    *Section
+	Title      string
+	Logo       string
+	Lang       string
+	Source     string
+	Public     string
+	Theme      string
+	Port       uint
+	Limit      int
+	Categories []string
+	Authors    map[string]*User
+	Layout     *Table
+	Repo       *Table
 }
 
 func NewSetting() *Setting {
@@ -40,8 +41,8 @@ func NewSetting() *Setting {
 		Port:    8080,
 		Limit:   20,
 		Authors: make(map[string]*User),
-		Layout:  new(Section),
-		Repo:    new(Section),
+		Layout:  new(Table),
+		Repo:    new(Table),
 	}
 }
 

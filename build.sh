@@ -20,4 +20,4 @@ buildPlugin()
 #buildPlugin markdown
 rm -f fountain
 $GOBUILD -ldflags="-s -w"
-#goupx --strip-binary --ultra-brute fountain
+#upx --ultra-brute fountain

@@ -3,6 +3,7 @@ package article
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
 
@@ -23,6 +24,34 @@ func NewTheme() *Theme {
 	}
 }
 
+func (this *Theme) GetOrCreate(name string) *template.Template {
+	var err error
+	if tpl, ok := this.Tpls[name]; ok {
+		return tpl
+	}
+	tpl := template.New(name).Funcs(this.FuncMap)
+	partials, _ := filepath.Glob(this.Dir + "partials/*.html")
+	tpl, err = tpl.ParseFiles(this.Dir + name + ".html")
+	tpl, err = tpl.ParseFiles(partials...)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if err == nil {
+		this.Tpls[name] = tpl
+	}
+	return tpl
+}
+
+func (this *Theme) AddUrlPre(dir string) string {
+	prefix := ""
+	if len(dir) > 0 && dir != "." {
+		times := strings.Count(dir, "/") + 1
+		prefix = strings.Repeat("../", times)
+		prefix = prefix[:len(prefix)-1]
+	}
+	return prefix
+}
+
 func (this *Theme) CopyAssets(dirs ...string) (err error) {
 	for _, dir := range dirs {
 		if dir == "" {
@@ -34,34 +63,21 @@ func (this *Theme) CopyAssets(dirs ...string) (err error) {
 	return
 }
 
-func (this *Theme) GetOrCreate(name string) *template.Template {
-	var err error
-	if tpl, ok := this.Tpls[name]; ok {
-		return tpl
-	}
-	tpl := template.New(name).Funcs(this.FuncMap)
-	tpl, err = tpl.ParseFiles(this.Dir+name+".html",
-		this.Dir+"_head.html", this.Dir+"_header.html")
+func (this *Theme) Render(name, path string, cxt Table) (err error) {
+	var file *os.File
+	dir := filepath.Dir(path)
+	err = os.MkdirAll(dir, MODE_DIR)
 	if err != nil {
-		fmt.Println(err)
+		return
 	}
-	if err == nil {
-		this.Tpls[name] = tpl
-	}
-	return tpl
-}
-
-func (this *Theme) Render(name, path string, context interface{}) error {
-	file, err := os.Create(this.OutDir + path)
+	cxt["UrlPre"] = this.AddUrlPre(dir)
+	file, err = os.Create(this.OutDir + path)
 	defer file.Close()
 	if err != nil {
-		return err
+		return
 	}
 	file.Chmod(MODE_FILE)
 	tpl := this.GetOrCreate(name)
-	return tpl.ExecuteTemplate(file, name+".html", context)
-}
-
-func (this *Theme) RenderArticle(path string, blog *Article) error {
-	return this.Render("article", path, blog)
+	err = tpl.ExecuteTemplate(file, name+".html", cxt)
+	return
 }
