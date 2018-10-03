@@ -1,0 +1,27 @@
+
+title: "John's Tech Blog"
+logo:
+lang: zh
+source: source/
+public: public/
+theme: default
+port: 8080
+limit: 10
+categories:
+    - linux
+    - go
+    - java
+
+layout:
+    custom_css: []
+    custom_js: []
+
+authors:
+    ryan:
+        name: John Doe
+        avatar: "static/avatars/john.jpg"
+        intro:
+
+repo:
+    github_user:
+    github_repo:
