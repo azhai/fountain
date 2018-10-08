@@ -8,9 +8,8 @@ theme: default
 port: 8080
 limit: 10
 categories:
-    - linux
-    - go
-    - java
+    - help
+    - markdown
 
 layout:
     custom_css: []

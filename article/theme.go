@@ -66,7 +66,7 @@ func (this *Theme) CopyAssets(dirs ...string) (err error) {
 func (this *Theme) Render(name, path string, cxt Table) (err error) {
 	var file *os.File
 	dir := filepath.Dir(path)
-	err = os.MkdirAll(dir, MODE_DIR)
+	err = os.MkdirAll(this.OutDir+dir, MODE_DIR)
 	if err != nil {
 		return
 	}
