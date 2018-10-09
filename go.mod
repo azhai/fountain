@@ -10,6 +10,7 @@ replace (
 )
 
 require (
+	github.com/kardianos/service v0.0.0-20180910224244-b1866cf76903
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/shurcooL/sanitized_anchor_name v0.0.0-20170918181015-86672fcb3f95 // indirect
 	gopkg.in/russross/blackfriday.v2 v2.0.1

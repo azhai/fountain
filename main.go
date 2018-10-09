@@ -3,14 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 	"plugin"
+	"runtime"
 
 	"fountain/article"
 	"fountain/utils"
-	"gopkg.in/russross/blackfriday.v2"
+	bf2 "gopkg.in/russross/blackfriday.v2"
 )
 
-const VERSION = "0.39.7"
+const VERSION = "0.41.2"
 
 var (
 	serve   bool   //运行WEB服务
@@ -26,10 +28,31 @@ func init() {
 	flag.StringVar(&root, "r", "", "博客根目录")
 	flag.BoolVar(&clean, "c", false, "清理旧输出")
 	flag.BoolVar(&verbose, "v", false, "输出详情")
+	flag.Usage = usage
 	flag.Parse()
 }
 
+func usage() {
+	desc := `fountain version: v%s
+Usage: fountain [-r root] [-p port] [-scv]
+
+Options:
+`
+	fmt.Fprintf(os.Stderr, desc, VERSION)
+	flag.PrintDefaults()
+}
+
 func main() {
+	if runtime.GOOS == "windows" {
+		name := "Fountain"
+		desc := "Fountain Static Blog Server"
+		utils.WinMain(name, desc, run)
+	} else {
+		run()
+	}
+}
+
+func run() {
 	site := article.NewWebsite(root)
 	site.LoadConfig("config.yml")
 	site.Convert = Convert
@@ -46,8 +69,8 @@ func main() {
 	} else {
 		if clean {
 			fmt.Println("Clean ...")
-			pubDir := site.RootDir + site.Conf.Public
 			if len(site.Conf.Public) >= 3 {
+				pubDir := site.Root + site.Conf.Public
 				utils.CleanDir(pubDir)
 			}
 		}
@@ -57,11 +80,18 @@ func main() {
 	}
 }
 
+func WithOptions(flags bf2.HTMLFlags) bf2.Option {
+	params := bf2.HTMLRendererParameters{Flags: flags}
+	renderer := bf2.NewHTMLRenderer(params)
+	return bf2.WithRenderer(renderer)
+}
+
 func Convert(source []byte, format string) []byte {
 	if format == "" {
 		return source
 	} else if format == "markdown" {
-		return blackfriday.Run(source)
+		flags := bf2.CommonHTMLFlags | bf2.TOC
+		return bf2.Run(source, WithOptions(flags))
 	}
 	plug, err := plugin.Open("./" + format + ".so")
 	if err != nil {

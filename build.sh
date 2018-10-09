@@ -1,11 +1,14 @@
 #!/bin/bash
 
-export GOARCH=amd64
-export GOOS=$(uname -s | tr [A-Z] [a-z])
+GOARCH=amd64
+GOOS=$(uname -s | tr [A-Z] [a-z])
 if [ "$GOOS" == "darwin" ]; then
-    export GOBUILD="/usr/local/bin/go build"
+    GOBUILD="/usr/local/bin/go build"
+    UPX=""
 else
-    export GOBUILD="/usr/bin/go build"
+    GOBUILD="/usr/bin/go build"
+    UPX="/usr/bin/upx"
+    #UPX="/usr/bin/upx --ultra-brute"
 fi
 
 buildPlugin()
@@ -20,4 +23,7 @@ buildPlugin()
 #buildPlugin markdown
 rm -f fountain
 $GOBUILD -ldflags="-s -w"
-#upx --ultra-brute fountain
+
+if [ -e "$UPX" ]; then
+    $UPX fountain
+fi
