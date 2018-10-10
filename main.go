@@ -18,6 +18,7 @@ var (
 	serve   bool   //运行WEB服务
 	port    uint   //服务端口
 	root    string //博客根目录
+	theme   string //皮肤主题
 	clean   bool   //清理旧输出
 	verbose bool   //输出详情
 )
@@ -26,6 +27,7 @@ func init() {
 	flag.BoolVar(&serve, "s", false, "运行WEB服务")
 	flag.UintVar(&port, "p", 0, "服务端口")
 	flag.StringVar(&root, "r", "", "博客根目录")
+	flag.StringVar(&theme, "t", "", "皮肤主题")
 	flag.BoolVar(&clean, "c", false, "清理旧输出")
 	flag.BoolVar(&verbose, "v", false, "输出详情")
 	flag.Usage = usage
@@ -34,7 +36,7 @@ func init() {
 
 func usage() {
 	desc := `fountain version: v%s
-Usage: fountain [-r root] [-p port] [-scv]
+Usage: fountain [-t theme] [-r root] [-p port] [-scv]
 
 Options:
 `
@@ -55,6 +57,9 @@ func main() {
 func run() {
 	site := article.NewWebsite(root)
 	site.LoadConfig("config.yml")
+	if theme != "" {
+		site.Conf.Theme = theme
+	}
 	site.Convert = Convert
 	site.Debug = func(data ...interface{}) {
 		if verbose {

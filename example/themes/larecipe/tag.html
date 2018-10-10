@@ -14,11 +14,14 @@
     <div class="container-fluid pl-0 documentation is-dark">
         <div class="row">
 
-            <div id="sidebar"></div>
+            <div class="col-12 col-md-3 sidebar "
+            :class="[{'is-hidden': ! sidebar}, {'is-dark': forceDarkSidebar}, {'is-light': forceLightSidebar}]">
+                <ul id="sidebar"></ul>
+            </div>
 
             <div class="col-12 col-md-9 article" :class="{'expanded': ! sidebar}">
-
                 <h1 class="content-subhead">TAG: {{.Tag}}</h1>
+                <hr>
 
                 {{$urlpre := .UrlPre}}
                 {{range $lnk := .Site.GetTagArchives .Tag}}
@@ -30,7 +33,7 @@
                 </section>
                 {{end}}
 
-            <hr>
+                <hr>
             </div>
         </div>
     </div>
@@ -41,9 +44,7 @@
 <script src="{{.UrlPre}}/static/js/bundle.js"></script>
 <script src="{{.UrlPre}}/static/js/app.js"></script>
 <script type="text/javascript">
-$(function(){
-    $('#sidebar').load('{{.UrlPre}}/sidebar.html');
-});
+    loadSidebar('{{.UrlPre}}');
 </script>
 </body>
 </html>

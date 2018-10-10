@@ -1,4 +1,5 @@
 <div class="sidebar pure-u-1 pure-u-md-1-4">
+    {{$urlpre := .UrlPre}}
     <div class="header">
         <a href="{{.UrlPre}}/index.html"><h1 class="brand-title">{{.Conf.Title}}</h1></a>
         <!--
@@ -9,12 +10,10 @@
         <input class="search-field" type="search" id="tipue_search_input" placeholder="Search..." autocomplete="on" results="25" autosave="text_search">
         </div>
         -->
-
         <nav class="nav">
             <ul class="nav-list">
-                {{$urlpre := .UrlPre}}
                 {{$curr := .Tag}}
-                {{range $tag := .Conf.Categories}}
+                {{range $tag := .Conf.Top_tags}}
                 <li class="nav-item">
                     <a class="pure-button{{if eq $curr $tag }} button-active{{end}}" href="{{$urlpre}}/tag/{{$tag}}.html">{{$tag}}</a>
                 </li>
