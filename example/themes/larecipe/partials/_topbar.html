@@ -1,7 +1,7 @@
 <larecipe-nav type="white"  effect="light" expand fixed style="height: 4rem; top: 3px;">
     
     <div slot="brand" style="display: flex; align-items: center;">
-        <a class="navbar-brand"  href="{{.UrlPre}}/" >
+        <a class="navbar-brand"  href="{{.UrlPre}}/index.html" >
             <img src="{{.UrlPre}}/static/logo.svg" alt="logo"/>
             <span>{{.Conf.Title}}</span>
         </a>
@@ -10,7 +10,7 @@
 
     <div class="row" slot="content-header" slot-scope="{closeMenu}">
         <div class="col-6 collapse-brand">
-            <a href="{{.UrlPre}}/">{{.Conf.Title}}</a>
+            <a href="{{.UrlPre}}/index.html">{{.Conf.Title}}</a>
         </div>
         <div class="col-6 collapse-close">
             <larecipe-close-button @click="closeMenu"></larecipe-close-button>
@@ -24,21 +24,23 @@
             <i class="fa fa-search"></i>
         </larecipe-button>
     
+        {{if .Conf.Github.user}}
         <larecipe-button tag="a" id="repository_button" 
-            target="__blank" href="https://github.com/saleem-hadad/larecipe" 
+            target="__blank" href="https://github.com/{{.Conf.Github.user}}/{{.Conf.Github.repo}}" 
             slot="title" type="outline-primary" style="width: 100%">
             <i class="fa fa-github"></i>
         </larecipe-button>
+        {{end}}
     
         <larecipe-dropdown>
             <larecipe-button slot="title" type="primary" class="dropdown-toggle" style="width: 100%">
                 zh
             </larecipe-button>
             <li role="presentation">
-                <a class="dropdown-item" href="{{.UrlPre}}/en/">en</a>
+                <a class="dropdown-item" href="{{.UrlPre}}/en/index.html">en</a>
             </li>
             <li role="presentation">
-                <a class="dropdown-item" href="{{.UrlPre}}/">zh</a>
+                <a class="dropdown-item" href="{{.UrlPre}}/index.html">zh</a>
             </li>
         </larecipe-dropdown>
 

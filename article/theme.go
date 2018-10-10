@@ -11,10 +11,11 @@ import (
 )
 
 type Theme struct {
-	tplDir  string //结尾有斜杠
-	PubDir  string //结尾有斜杠
-	FunDict template.FuncMap
-	TplDict map[string]*template.Template
+	tplDir   string //结尾有斜杠
+	PubDir   string //结尾有斜杠
+	FunDict  template.FuncMap
+	TplDict  map[string]*template.Template
+	WithSide bool
 }
 
 func NewTheme(tplDir string) *Theme {
@@ -62,6 +63,16 @@ func (this *Theme) CopyAssets(dirs ...string) (err error) {
 		}
 		dir = this.tplDir + strings.Trim(dir, "/")
 		err = utils.CopyDir(dir, this.PubDir)
+	}
+	return
+}
+
+func (this *Theme) CreateSidebar(path string, archDirs Categoris) (err error) {
+	file := this.tplDir + "sidebar.html"
+	if utils.PathExist(file) {
+		fmt.Println("√", path)
+		ctx := Table{"ArchDirs": archDirs, "UrlPre": this.AddUrlPre("")}
+		err = this.Render("sidebar", path, ctx)
 	}
 	return
 }

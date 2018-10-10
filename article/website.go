@@ -8,11 +8,13 @@ import (
 	"path/filepath"
 )
 
+type Categoris map[string]([]int)
+
 type Website struct {
 	Root     string
 	Archives []*Link
-	ArchDirs map[string]([]int)
-	ArchTags map[string]([]int)
+	ArchDirs Categoris
+	ArchTags Categoris
 	Conf     *Setting
 	Skin     *Theme
 	Convert  func(source []byte, format string) []byte
@@ -27,8 +29,8 @@ func NewWebsite(root string) *Website {
 	}
 	return &Website{
 		Root:     root,
-		ArchDirs: make(map[string]([]int)),
-		ArchTags: make(map[string]([]int)),
+		ArchDirs: make(Categoris),
+		ArchTags: make(Categoris),
 		Conf:     NewSetting(),
 	}
 }
@@ -61,6 +63,11 @@ func (this *Website) AddArticle(blog *Article, dir, name string) string {
 	arch := blog.SetUrl(url)
 	idx := len(this.Archives)
 	this.Archives = append(this.Archives, arch)
+	if authorId := blog.Meta.Author; authorId != "" {
+		if author, ok := this.Conf.Authors[authorId]; ok {
+			blog.Author = author
+		}
+	}
 	for _, name := range blog.Meta.Tags {
 		this.ArchTags[name] = append(this.ArchTags[name], idx)
 	}
@@ -86,7 +93,7 @@ func (this *Website) GetArchiveString(idx int) string {
 	if lnk == nil || lnk.Title == "" {
 		return ""
 	}
-	return lnk.ToString("")
+	return lnk.ToString("@URLPRE@")
 }
 
 func (this *Website) GetTagArchives(name string) []*Link {
@@ -154,11 +161,6 @@ func (this *Website) CreateTags() error {
 		err = this.Skin.Render("tag", url, ctx)
 	}
 	return err
-}
-
-func (this *Website) CreateSidebar() error {
-	ctx := Table{"ArchDirs": this.ArchDirs, "UrlPre": this.Skin.AddUrlPre("")}
-	return this.Skin.Render("sidebar", "sidebar.html", ctx)
 }
 
 func (this *Website) Prepare(dir string, cxt Table, createDir bool) (err error) {
@@ -234,8 +236,10 @@ func (this *Website) BuildFiles() error {
 		this.CreateIndex(this.Conf.Limit)
 		this.Debug("Tags:")
 		this.CreateTags()
-		this.CreateSidebar()
 		this.Skin.CopyAssets("static")
+		//这个放在复制静态文件之后，可以不用创建目录
+		path := "static/js/app.js"
+		this.Skin.CreateSidebar(path, this.ArchDirs)
 	}
 	return err
 }

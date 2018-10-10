@@ -92,12 +92,12 @@ func (this *Article) SetUrl(url string) *Link {
 	return this.Archive
 }
 
-func (this *Article) SetAuthor(id string) *User {
+func (this *Article) SetDummyAuthor(id string) *User {
 	this.Author = &User{
 		ID:     id,
 		Name:   id,
 		Intro:  "",
-		Avatar: "/static/avatars/" + id + ".jpg",
+		Avatar: "",
 	}
 	return this.Author
 }
@@ -111,7 +111,7 @@ func (this *Article) SetData(name string, chunk []byte) int {
 	if name == "Meta" {
 		YamlParse([]byte(text), &this.Meta)
 		if this.Meta.Author != "" {
-			this.SetAuthor(this.Meta.Author)
+			this.SetDummyAuthor(this.Meta.Author)
 		}
 	} else {
 		this.Source = text

@@ -17,31 +17,34 @@
     <div class="container-fluid pl-0 documentation is-dark">
         <div class="row">
 
-            <div id="sidebar"></div>
+            <div class="col-12 col-md-3 sidebar "
+            :class="[{'is-hidden': ! sidebar}, {'is-dark': forceDarkSidebar}, {'is-light': forceLightSidebar}]">
+                <ul id="sidebar"></ul>
+            </div>
 
             <div class="col-12 col-md-9 article" :class="{'expanded': ! sidebar}">
-            <a href="{{.UrlPre}}/{{.Blog.Archive.Url}}">
-                <h1 class="post-title">{{.Blog.Meta.Title}}</h1>
-            </a>
+                <a href="{{.UrlPre}}/{{.Blog.Archive.Url}}">
+                    <h1 class="post-title">{{.Blog.Meta.Title}}</h1>
+                </a>
 
-            <p class="post-meta">
-                {{if .Blog.Meta.Author}}
-                    <img width="24" height="24" alt="{{.Blog.Author.ID}}" class="post-avatar" src="{{.UrlPre}}/{{.Blog.Author.Avatar}}">
-                    <a class="post-author" href="#">{{.Blog.Author.Name}}</a>
-                {{end}}
-                at <a class="post-date" href="#">{{.Blog.Meta.Date}}</a>
-                under
-                {{$urlpre := .UrlPre}}
-                <span class="tags">{{range $tag := .Blog.Meta.Tags}}
-                    <a class="post-tag" href="{{$urlpre}}/tag/{{$tag}}.html">{{$tag}}</a>
-                {{end}}</span>
-            </p>
-            <hr>
+                <p class="post-meta">
+                    {{if .Blog.Meta.Author}}
+                        <img width="32" height="32" alt="{{.Blog.Author.ID}}" class="post-avatar" src="{{.UrlPre}}/{{.Blog.Author.Avatar}}">
+                        <a class="post-author" href="#">{{.Blog.Author.Name}}</a>
+                    {{end}}
+                    at <a class="post-date" href="#">{{.Blog.Meta.Date}}</a>
+                    under
+                    {{$urlpre := .UrlPre}}
+                    <span class="tags">{{range $tag := .Blog.Meta.Tags}}
+                        <a class="post-tag" href="{{$urlpre}}/tag/{{$tag}}.html">{{$tag}}</a>
+                    {{end}}</span>
+                </p>
 
-            {{.Blog.Content}}
-
-            <hr>
+                <hr>
+                {{.Blog.Content}}
+                <hr>
             </div>
+
         </div>
     </div>
 
@@ -52,10 +55,8 @@
 <script src="{{.UrlPre}}/static/js/app.js"></script>
 <script src="{{.UrlPre}}/static/js/highlight.js"></script>
 <script type="text/javascript">
-$(function(){
-    $('#sidebar').load('{{.UrlPre}}/sidebar.html');
+    loadSidebar('{{.UrlPre}}');
     hljs.initHighlightingOnLoad();
-});
 </script>
 </body>
 </html>

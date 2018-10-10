@@ -3,7 +3,7 @@ date:       2014-04-08
 title:      Markdown 语法
 slug:       github-flavored-markdown
 tags:       [help, markdown, github]
-comments:   false
+author:     john
 weight:     990101
 ---
 

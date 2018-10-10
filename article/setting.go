@@ -30,7 +30,7 @@ type Setting struct {
 	Top_tags []string
 	Authors  map[string]*User
 	Layout   *Table
-	Repo     *Table
+	Github   *Table
 }
 
 func NewSetting() *Setting {
@@ -44,7 +44,7 @@ func NewSetting() *Setting {
 		Limit:   10,
 		Authors: make(map[string]*User),
 		Layout:  new(Table),
-		Repo:    new(Table),
+		Github:  new(Table),
 	}
 }
 
