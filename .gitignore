@@ -12,6 +12,5 @@ fountain
 go.sum
 blog/
 example/public/
-themes/
 tests/
 vendor/

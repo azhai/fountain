@@ -1,0 +1,17 @@
+
+<div class="col-12 col-md-3 sidebar "
+:class="[{'is-hidden': ! sidebar}, {'is-dark': forceDarkSidebar}, {'is-light': forceLightSidebar}]">
+{{$urlpre := .UrlPre}}
+<ul>
+    {{range $dir, $files := .ArchDirs}}
+    <li>
+    <h2>{{$dir}}</h2>
+    <ul>
+        {{range $idx := $files}}
+        <li>{{getArchiveString $idx}}</li>
+        {{end}}
+    </ul>
+    </li>
+    {{end}}
+</ul>
+</div>
