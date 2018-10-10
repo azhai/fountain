@@ -25,15 +25,17 @@ func NewTheme(tplDir string) *Theme {
 	}
 }
 
-func (this *Theme) GetOrCreate(name string) *template.Template {
+func (this *Theme) GetOrCreate(name string, incl bool) *template.Template {
 	var err error
 	if tpl, ok := this.TplDict[name]; ok {
 		return tpl
 	}
 	tpl := template.New(name).Funcs(this.FunDict)
-	partials, _ := filepath.Glob(this.tplDir + "partials/*.html")
 	tpl, err = tpl.ParseFiles(this.tplDir + name + ".html")
-	tpl, err = tpl.ParseFiles(partials...)
+	if incl {
+		partials, _ := filepath.Glob(this.tplDir + "partials/*.html")
+		tpl, err = tpl.ParseFiles(partials...)
+	}
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -73,7 +75,7 @@ func (this *Theme) Render(name, path string, cxt Table) (err error) {
 	}
 	file.Chmod(MODE_FILE)
 	cxt["Path"] = path
-	tpl := this.GetOrCreate(name)
+	tpl := this.GetOrCreate(name, true)
 	err = tpl.ExecuteTemplate(file, name+".html", cxt)
 	return
 }

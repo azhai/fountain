@@ -81,12 +81,12 @@ func (this *Website) GetArchive(idx int) *Link {
 	return &Link{}
 }
 
-func (this *Website) GetArchiveString(idx int, urlpre string) string {
+func (this *Website) GetArchiveString(idx int) string {
 	lnk := this.GetArchive(idx)
 	if lnk == nil || lnk.Title == "" {
 		return ""
 	}
-	return lnk.ToString(urlpre)
+	return lnk.ToString("")
 }
 
 func (this *Website) GetTagArchives(name string) []*Link {
@@ -156,6 +156,11 @@ func (this *Website) CreateTags() error {
 	return err
 }
 
+func (this *Website) CreateSidebar() error {
+	ctx := Table{"ArchDirs": this.ArchDirs, "UrlPre": this.Skin.AddUrlPre("")}
+	return this.Skin.Render("sidebar", "sidebar.html", ctx)
+}
+
 func (this *Website) Prepare(dir string, cxt Table, createDir bool) (err error) {
 	if createDir {
 		err = os.MkdirAll(this.Skin.PubDir+dir, MODE_DIR)
@@ -166,8 +171,6 @@ func (this *Website) Prepare(dir string, cxt Table, createDir bool) (err error) 
 	cxt["Dir"] = dir
 	cxt["UrlPre"] = this.Skin.AddUrlPre(dir)
 	cxt["Conf"] = this.Conf
-	cxt["ArchDirs"] = this.ArchDirs
-	cxt["ArchTags"] = this.ArchTags
 	return
 }
 
@@ -231,6 +234,7 @@ func (this *Website) BuildFiles() error {
 		this.CreateIndex(this.Conf.Limit)
 		this.Debug("Tags:")
 		this.CreateTags()
+		this.CreateSidebar()
 		this.Skin.CopyAssets("static")
 	}
 	return err
