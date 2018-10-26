@@ -8,9 +8,8 @@
 *.sublime-workspace
 *.tmp
 *.txt
+*.vscode
 fountain
-go.sum
 blog/
 example/public/
 tests/
-vendor/

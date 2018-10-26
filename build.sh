@@ -3,10 +3,10 @@
 GOARCH=amd64
 GOOS=$(uname -s | tr [A-Z] [a-z])
 if [ "$GOOS" == "darwin" ]; then
-    GOBUILD="/usr/local/bin/go build"
+    GOBUILD="/usr/local/bin/go build --mod=vendor"
     UPX=""
 else
-    GOBUILD="/usr/bin/go build"
+    GOBUILD="/usr/bin/go build --mod=vendor"
     UPX="/usr/bin/upx"
     #UPX="/usr/bin/upx --ultra-brute"
 fi
