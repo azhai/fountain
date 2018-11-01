@@ -1,3 +1,5 @@
+github.com/golang/sys v0.0.0-20180925112736-b09afc3d579e h1:9S+H2Ta5XP1xZp5nKJBz4ygEs0KviOCQ5C3/lZwcFds=
+github.com/golang/sys v0.0.0-20180925112736-b09afc3d579e/go.mod h1:5JyrLPvD/ZdaYkT7IqKhsP5xt7aLjA99KXRtk4EIYDk=
 github.com/kardianos/osext v0.0.0-20170510131534-ae77be60afb1 h1:PJPDf8OUfOK1bb/NeTKd4f1QXZItOX389VN3B6qC8ro=
 github.com/kardianos/osext v0.0.0-20170510131534-ae77be60afb1/go.mod h1:1NbS8ALrpOvjt0rHPNLyCIeMtbizbir8U//inJ+zuB8=
 github.com/kardianos/service v0.0.0-20180910224244-b1866cf76903 h1:MyBGC6NYs/aqjsDIzIp7P2DH9XIR00MR/sUlsf3q5kg=
