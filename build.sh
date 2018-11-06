@@ -20,7 +20,7 @@ buildPlugin()
     $GOBUILD -buildmode=plugin -ldflags="$FLAGS" -o "$NAME.so" converter/"$NAME.go"
 }
 
-#buildPlugin markdown
+#buildPlugin rst
 rm -f fountain
 $GOBUILD -ldflags="-s -w"
 

@@ -60,7 +60,18 @@ func run() {
 	if theme != "" {
 		site.Conf.Theme = theme
 	}
-	site.Convert = Convert
+	site.Convert = func(source []byte, format string) []byte {
+		if format == "" {
+			return source
+		} else if format == "markdown" {
+			flags := bf2.CommonHTMLFlags
+			if site.Conf.Theme != "default" {
+				flags = flags | bf2.TOC
+			}
+			return bf2.Run(source, WithOptions(flags))
+		}
+		return PluginConvert(source, format)
+	}
 	site.Debug = func(data ...interface{}) {
 		if verbose {
 			fmt.Println(data...)
@@ -91,13 +102,7 @@ func WithOptions(flags bf2.HTMLFlags) bf2.Option {
 	return bf2.WithRenderer(renderer)
 }
 
-func Convert(source []byte, format string) []byte {
-	if format == "" {
-		return source
-	} else if format == "markdown" {
-		flags := bf2.CommonHTMLFlags | bf2.TOC
-		return bf2.Run(source, WithOptions(flags))
-	}
+func PluginConvert(source []byte, format string) []byte {
 	plug, err := plugin.Open("./" + format + ".so")
 	if err != nil {
 		panic(err)

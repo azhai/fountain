@@ -1,0 +1,43 @@
+<div class="offcanvas visible-xs">
+    <ul class="offcanvas__nav">
+        
+            <li><a href="{{.UrlPre}}/index.html">Homepage</a></li>
+            <li><a href="./content.html">Content Page</a></li>
+            <li><a href="./404.html">404 Page</a></li>
+        
+    </ul><!-- /.offcanvas__nav -->
+</div><!-- /.offcanvas -->
+
+
+
+<header class="site-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                
+                <a href="{{.UrlPre}}/index.html" class="site-header__logo">{{.Conf.Title}}</a>
+
+                <ul class="site-header__nav hidden-xs">
+                    <li><a href="{{.UrlPre}}/index.html">Homepage</a></li>
+                    <li><a href="./content.html">Content Page</a></li>
+                    <li><a href="./404.html">404 Page</a></li>      
+                    {{if .Conf.Github.user}}
+                    <larecipe-button tag="a" id="repository_button" 
+                        target="__blank" href="https://github.com/{{.Conf.Github.user}}/{{.Conf.Github.repo}}" 
+                        slot="title" type="outline-primary" style="width: 100%">
+                        <i class="fa fa-github"></i>
+                    </larecipe-button>
+                    {{end}}
+                </ul><!-- /.site-header__nav -->
+
+                <button class="offcanvas-toggle visible-xs">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button><!-- /.offcanvas-toggle -->
+                
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container -->
+</header><!-- /.site-header -->
+
