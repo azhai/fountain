@@ -1,6 +1,6 @@
 
 title: "John's Tech Blog"
-theme: default
+theme: green
 port: 8080
 sort: date
 top_tags:

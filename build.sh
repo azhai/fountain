@@ -21,9 +21,10 @@ buildPlugin()
 }
 
 #buildPlugin rst
-rm -f fountain
-$GOBUILD -ldflags="-s -w"
+
+rm -f fountain-linux-amd64
+$GOBUILD -ldflags="-s -w" -o fountain-linux-amd64 *.go
 
 if [ -e "$UPX" ]; then
-    $UPX fountain
+    sudo -H $UPX fountain-linux-amd64
 fi

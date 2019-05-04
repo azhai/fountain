@@ -1,21 +1,19 @@
 module fountain
 
 replace (
-	golang.org/x/crypto => github.com/golang/crypto v0.0.0-20180910181607-0e37d006457b
-	golang.org/x/net => github.com/golang/net v0.0.0-20180925072008-f04abc6bdfa7
-	golang.org/x/sync => github.com/golang/sync v0.0.0-20180314180146-1d60e4601c6f
-	golang.org/x/sys => github.com/golang/sys v0.0.0-20180925112736-b09afc3d579e
-	golang.org/x/sys/windows/registry => github.com/golang/sys/windows/registry v0.0.0-20180925112736-b09afc3d579e
-	golang.org/x/text => github.com/golang/text v0.3.0
+	golang.org/x/crypto => github.com/golang/crypto v0.0.0-20190426145343-a29dc8fdc734
+	golang.org/x/net => github.com/golang/net v0.0.0-20190502183928-7f726cade0ab
+	golang.org/x/sync => github.com/golang/sync v0.0.0-20190423024810-112230192c58
+	golang.org/x/sys => github.com/golang/sys v0.0.0-20190502175342-a43fa875dd82
+	golang.org/x/text => github.com/golang/text v0.3.2
 	gopkg.in/russross/blackfriday.v2 => github.com/russross/blackfriday/v2 v2.0.1
 )
 
 require (
-	github.com/kardianos/osext v0.0.0-20170510131534-ae77be60afb1 // indirect
-	github.com/kardianos/service v0.0.0-20180910224244-b1866cf76903
+	github.com/kardianos/service v1.0.0
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/shurcooL/sanitized_anchor_name v0.0.0-20170918181015-86672fcb3f95 // indirect
-	golang.org/x/sys v0.0.0-20181031143558-9b800f95dbbc // indirect
+	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
+	golang.org/x/sys v0.0.0-20190429190828-d89cdac9e872 // indirect
 	gopkg.in/russross/blackfriday.v2 v2.0.1
-	gopkg.in/yaml.v2 v2.2.1
+	gopkg.in/yaml.v2 v2.2.2
 )
