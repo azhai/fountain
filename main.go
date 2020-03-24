@@ -65,7 +65,7 @@ func run() {
 			return source
 		} else if format == "markdown" {
 			flags := bf2.CommonHTMLFlags
-			if site.Conf.Theme != "default" {
+			if site.Conf.Theme != "night" {
 				flags = flags | bf2.TOC
 			}
 			return bf2.Run(source, WithOptions(flags))

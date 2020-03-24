@@ -62,13 +62,13 @@ type Link struct {
 	Note   string
 }
 
-func (this *Link) ToString(urlpre string) string {
-	url := urlpre + "/" + this.Url
-	if this.Anchor != "" {
-		url += "#" + this.Anchor
+func (l Link) ToString(urlpre string) string {
+	url := urlpre + "/" + l.Url
+	if l.Anchor != "" {
+		url += "#" + l.Anchor
 	}
 	tpl := `<a href="%s" title="%s">%s</a>`
-	return fmt.Sprintf(tpl, url, this.Note, this.Title)
+	return fmt.Sprintf(tpl, url, l.Note, l.Title)
 }
 
 func I18n(val string) string {

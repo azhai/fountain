@@ -1,7 +1,6 @@
-.*
 .DS_Store
+.idea/
 *.bak
-*.exe
 *.log
 *.so
 *.sublime-project
@@ -9,7 +8,8 @@
 *.tmp
 *.txt
 *.vscode
-fountain
 blog/
 example/public/
+fountain-*
+go_mod_up.awk
 tests/

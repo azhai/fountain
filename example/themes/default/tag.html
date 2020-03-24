@@ -7,14 +7,21 @@
 </head>
 <body>
 
-<div id="layout" class="pure-g">
-    {{template "_sidebar.html" .}}
+<div id="app">
+    <div class="bg-gradient-primary" style="position: sticky; top: 0; z-index: 2333; height: 3px"></div>
+    {{template "_topbar.html" .}}
 
-    <div class="content pure-u-1 pure-u-md-3-4">
-        <div>
-            <!-- A wrapper for all the blog posts -->
-            <div class="posts">
-                <h1 class="content-subhead">Tag: {{.Tag}}</h1>
+    <div class="container-fluid pl-0 documentation is-dark">
+        <div class="row">
+
+            <div class="col-12 col-md-3 sidebar "
+            :class="[{'is-hidden': ! sidebar}, {'is-dark': forceDarkSidebar}, {'is-light': forceLightSidebar}]">
+                <ul id="sidebar"></ul>
+            </div>
+
+            <div class="col-12 col-md-9 article" :class="{'expanded': ! sidebar}">
+                <h1 class="content-subhead">TAG: {{.Tag}}</h1>
+                <hr>
 
                 {{$urlpre := .UrlPre}}
                 {{range $lnk := .Site.GetTagArchives .Tag}}
@@ -25,14 +32,19 @@
                     <p class="item-meta">{{$lnk.Note}}</p>
                 </section>
                 {{end}}
-            </div>
 
-            {{template "_footer.html" .}}
+                <hr>
+            </div>
         </div>
     </div>
+
+    <larecipe-back-to-top></larecipe-back-to-top>
 </div>
 
-<script src="{{.UrlPre}}/static/js/search.js"></script>
-
+<script src="{{.UrlPre}}/static/js/bundle.js"></script>
+<script src="{{.UrlPre}}/static/js/app.js"></script>
+<script type="text/javascript">
+    loadSidebar('{{.UrlPre}}');
+</script>
 </body>
 </html>

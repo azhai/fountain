@@ -21,11 +21,11 @@ type Program struct {
 	Main func()
 }
 
-func (this *Program) Start(s service.Service) error {
-	go this.Main()
+func (p *Program) Start(s service.Service) error {
+	go p.Main()
 	return nil
 }
 
-func (this *Program) Stop(s service.Service) error {
+func (Program) Stop(s service.Service) error {
 	return nil
 }

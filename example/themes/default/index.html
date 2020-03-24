@@ -7,37 +7,51 @@
 </head>
 <body>
 
-<div id="layout" class="pure-g">
-    {{template "_sidebar.html" .}}
+    <div id="app" class="green" data-spy="scroll" data-target=".js-scrollspy">
+    {{template "_topbar.html" .}}
 
-    <div class="content pure-u-1 pure-u-md-3-4">
-        <div>
-            <!-- A wrapper for all the blog posts -->
-            <div class="posts">
-                <h1 class="content-subhead">Catalog</h1>
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
 
-                {{$urlpre := .UrlPre}}
-                {{range $lnk := .Cata.GetArchives}}
-                <section class="post">
-                    <a href="{{$urlpre}}/{{$lnk.Url}}">
-                        <h3 class="item-title">{{$lnk.Title}}</h3>
-                    </a>
-                    <p class="item-meta">{{$lnk.Note}}</p>
-                </section>
-                {{end}}
+                    <div class="content">
 
-                <footer class="site" style="text-align:center">
-                    <span style="margin:0 10px">{{.Cata.GetPrev}}</span>
-                    <span style="margin:0 10px">{{.Cata.GetNext}}</span>
-                </footer>
-            </div>
+                <div class="col-12 col-md-9 article" :class="{'expanded': ! sidebar}">
 
-            {{template "_footer.html" .}}
-        </div>
+                    {{$urlpre := .UrlPre}}
+                    {{range $lnk := .Cata.GetArchives}}
+                    <section class="post">
+                        <a href="{{$urlpre}}/{{$lnk.Url}}">
+                            <h3 class="item-title">{{$lnk.Title}}</h3>
+                        </a>
+                        <p class="item-meta">{{$lnk.Note}}</p>
+                    </section>
+                    {{end}}
+
+                    <footer class="site" style="text-align:center">
+                        <span style="margin:0 10px">{{.Cata.GetPrev}}</span>
+                        <span style="margin:0 10px">{{.Cata.GetNext}}</span>
+                    </footer>
+
+                    <hr>
+                </div>
+
+
+                </div><!-- /.content -->
+
+                </div><!-- /.col -->
+
+            </div><!-- /.row -->
+        </div><!-- /.container -->
+        </div><!-- /.section -->
+
     </div>
-</div>
 
-<script src="{{.UrlPre}}/static/js/search.js"></script>
-
+    {{template "_foot.html" .}}
+    <script type="text/javascript" src="{{.UrlPre}}/static/js/app.js"></script>
+    <script type="text/javascript">
+        loadSidebar('{{.UrlPre}}');
+    </script>
 </body>
 </html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="{{.Conf.Lang}}">
+<head>
+    <meta charset="utf-8">
+    <title>{{.Conf.Title}}</title>
+    {{template "_head.html" .}}
+</head>
+<body>
+
+<div id="layout" class="pure-g">
+    {{template "_sidebar.html" .}}
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div>
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+                <h1 class="content-subhead">Tag: {{.Tag}}</h1>
+
+                {{$urlpre := .UrlPre}}
+                {{range $lnk := .Site.GetTagArchives .Tag}}
+                <section class="post">
+                    <a href="{{$urlpre}}/{{$lnk.Url}}">
+                        <h3 class="item-title">{{$lnk.Title}}</h3>
+                    </a>
+                    <p class="item-meta">{{$lnk.Note}}</p>
+                </section>
+                {{end}}
+            </div>
+
+            {{template "_footer.html" .}}
+        </div>
+    </div>
+</div>
+
+<script src="{{.UrlPre}}/static/js/search.js"></script>
+
+</body>
+</html>

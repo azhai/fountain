@@ -8,55 +8,64 @@
     {{template "_head.html" .}}
     <link rel="stylesheet" href="{{.UrlPre}}/static/css/dracula.css">
 </head>
-<body>
+<body class="green">
 
-<div id="layout" class="pure-g">
-    {{template "_sidebar.html" .}}
+    <div id="app" class="green" data-spy="scroll" data-target=".js-scrollspy">
+    {{template "_topbar.html" .}}
 
-    <div class="content pure-u-1 pure-u-md-3-4">
-        <div>
+    <div class="hero-subheader">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="align-container" data-mh>
+                        <div class="align-inner">
 
-            <!-- A wrapper for all the blog posts -->
-            <div class="posts">
+                                <h1 class="hero-subheader__title">{{.Blog.Meta.Title}}</h1>
 
-                <section class="post">
-                    <header class="post-header">
-                        {{if .Blog.Meta.Author}}
-                        <img width="48" height="48" alt="{{.Blog.Author.ID}}" class="post-avatar" src="{{.UrlPre}}/{{.Blog.Author.Avatar}}">
-                        {{end}}
+                                {{if .Blog.Meta.Author}}
+                                    <img width="32" height="32" alt="{{.Blog.Author.ID}}" class="post-avatar" src="{{.UrlPre}}/{{.Blog.Author.Avatar}}">
+                                    <a class="post-author" href="#">{{.Blog.Author.Name}}</a>
+                                {{end}}
+                                at <a class="post-date" href="#">{{.Blog.Meta.Date}}</a>
+                                under
+                                {{$urlpre := .UrlPre}}
+                                <span class="tags">{{range $tag := .Blog.Meta.Tags}}
+                                    <a class="post-tag" href="{{$urlpre}}/tag/{{$tag}}.html">{{$tag}}</a>
+                                {{end}}</span>
 
-                        <a href="{{.UrlPre}}/{{.Blog.Archive.Url}}">
-                            <h2 class="post-title">{{.Blog.Meta.Title}}</h2>
-                        </a>
+                        </div><!-- /.align-inner -->
+                    </div><!-- /.align-container -->
+                </div><!-- /.col -->
 
-                        <p class="post-meta">
-                            {{if .Blog.Meta.Author}}
-                                By <a class="post-author" href="#">{{.Blog.Author.Name}}</a>
-                            {{end}}
-                            at <a class="post-date" href="#">{{.Blog.Meta.Date}}</a>
-                            under
-                            {{$urlpre := .UrlPre}}
-                            <span class="tags">{{range $tag := .Blog.Meta.Tags}}
-                                <a class="post-tag" href="{{$urlpre}}/tag/{{$tag}}.html">{{$tag}}</a>
-                            {{end}}</span>
-                        </p>
-                    </header>
+            </div><!-- /.row -->
+        </div><!-- /.container -->
+    </div><!-- /.hero-subheader -->
 
-                    <div class="post-description">
-                        <p>
-                            {{.Blog.Content}}
-                        </p>
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+
+                    <div class="content">
+                    {{.Blog.Content}}
+                    </div><!-- /.content -->
+
+                </div><!-- /.col -->
+                <div class="col-md-4 col-md-offset-1">
+                    <div class="sections-list-wrapper">
+                        <div class="sections-list js-sections js-affix js-scrollspy hidden-xs hidden-sm"></div><!-- /.sections-list -->
                     </div>
-                </section>
-            </div>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container -->
+    </div><!-- /.section -->
 
-            {{template "_footer.html" .}}
-        </div>
-    </div>
-</div>
-
-<script src="{{.UrlPre}}/static/js/highlight.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
-
+    {{template "_foot.html" .}}
+    <script type="text/javascript" src="{{.UrlPre}}/static/js/app.js"></script>
+    <script type="text/javascript" src="{{.UrlPre}}/static/js/highlight.js"></script>
+    <script type="text/javascript">
+        loadSidebar('{{.UrlPre}}');
+        hljs.initHighlightingOnLoad();
+    </script>
 </body>
 </html>

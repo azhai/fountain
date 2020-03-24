@@ -15,7 +15,7 @@ Fountain is an static blog generator developed by Golang.
 生成 public 目录，可以直接用浏览器打开 index.html 查看网站
 
 ```
-go build -ldflags "-s -w" -mod=vendor -o fountain-win7-x64.exe
+go build -ldflags "-s -w" -o fountain-win7-x64.exe
 ```
 
 ## 深色主题

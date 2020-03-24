@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="{{.Conf.Lang}}">
+<head>
+	<meta charset="utf-8">
+	<title>404 - Page not found | {{.Conf.Title}}</title>
+	{{template "_head.html" .}}
+	<link rel="stylesheet" href="{{.UrlPre}}/static/css/dracula.css">
+</head>
+<body class="green error-404">
+
+<div id="app" class="green" data-spy="scroll" data-target=".js-scrollspy">
+	{{template "_topbar.html" .}}
+
+	<div class="align-container">
+		<div class="align-inner">
+			<h1 class="error-404__title"><strong>404 /</strong> Page not found</h1>
+			<a href="./index.html" class="btn btn--dark btn--rounded btn--w-icon btn--w-icon-left">
+				<i class="icon icon--home"></i>
+				Go back home
+			</a>
+		</div><!-- /.align-inner -->
+	</div><!-- /.align-container -->
+
+	{{template "_foot.html" .}}
+</body>
+</html>

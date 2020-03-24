@@ -35,22 +35,22 @@ type Catelog struct {
 	Stop  int
 }
 
-func (this *Catelog) GetArchives() []*Link {
-	return this.Site.Archives[this.Start:this.Stop]
+func (c Catelog) GetArchives() []*Link {
+	return c.Site.Archives[c.Start:c.Stop]
 }
 
-func (this *Catelog) GetNext() string {
+func (c Catelog) GetNext() string {
 	link := "下一页"
-	if node := this.Node.Next(); node != nil {
+	if node := c.Node.Next(); node != nil {
 		url := node.Value.(string)
 		link = fmt.Sprintf("<a href=\"./%s\">%s</a>", url, link)
 	}
 	return link
 }
 
-func (this *Catelog) GetPrev() string {
+func (c Catelog) GetPrev() string {
 	link := "上一页"
-	if node := this.Node.Prev(); node != nil {
+	if node := c.Node.Prev(); node != nil {
 		url := node.Value.(string)
 		link = fmt.Sprintf("<a href=\"./%s\">%s</a>", url, link)
 	}
@@ -74,88 +74,88 @@ func NewArticle() *Article {
 	}
 }
 
-func (this *Article) SetFormat(ext string) {
+func (a *Article) SetFormat(ext string) {
 	switch ext {
 	case EXT_MARKDOWN:
-		this.Format = "markdown"
+		a.Format = "markdown"
 	default:
-		this.Format = ""
+		a.Format = ""
 	}
 }
 
-func (this *Article) SetUrl(url string) *Link {
-	this.Archive = &Link{
+func (a *Article) SetUrl(url string) *Link {
+	a.Archive = &Link{
 		Url:   url,
-		Title: this.Meta.Title,
-		Note:  this.Meta.Date,
+		Title: a.Meta.Title,
+		Note:  a.Meta.Date,
 	}
-	return this.Archive
+	return a.Archive
 }
 
-func (this *Article) SetDummyAuthor(id string) *User {
-	this.Author = &User{
+func (a *Article) SetDummyAuthor(id string) *User {
+	a.Author = &User{
 		ID:     id,
 		Name:   id,
 		Intro:  "",
 		Avatar: "",
 	}
-	return this.Author
+	return a.Author
 }
 
-func (this *Article) SetData(name string, chunk []byte) int {
+func (a *Article) SetData(name string, chunk []byte) int {
 	text := strings.TrimSpace(string(chunk))
 	length := len(text)
 	if length == 0 {
 		return 0
 	}
 	if name == "Meta" {
-		YamlParse([]byte(text), &this.Meta)
-		if this.Meta.Author != "" {
-			this.SetDummyAuthor(this.Meta.Author)
+		YamlParse([]byte(text), &a.Meta)
+		if a.Meta.Author != "" {
+			a.SetDummyAuthor(a.Meta.Author)
 		}
 	} else {
-		this.Source = text
+		a.Source = text
 	}
 	return length
 }
 
-func (this *Article) SplitSource(data []byte, times int) error {
+func (a *Article) SplitSource(data []byte, times int) error {
 	var (
 		size, length int
 		idx          = 0
 		sep          = []byte(SEP_META + "\n")
 		offset       = len(sep)
 	)
-	this.Meta.Title = ""
+	a.Meta.Title = ""
 	for {
 		times--
 		size = bytes.Index(data[idx:], sep)
 		//不是最后一段，元数据还没有找到
-		if size >= 0 && times >= 0 && this.Meta.Title == "" {
-			length = this.SetData("Meta", data[idx:idx+size])
+		if size >= 0 && times >= 0 && a.Meta.Title == "" {
+			length = a.SetData("Meta", data[idx:idx+size])
 			//空段或刚找到元数据
-			if length == 0 || this.Meta.Title != "" {
+			if length == 0 || a.Meta.Title != "" {
 				idx += size + offset
 				continue
 			}
 		}
-		this.SetData("Source", data[idx:])
+		a.SetData("Source", data[idx:])
 		break
 	}
 	return nil
 }
 
-func (this *Article) ParseFile(path string) (string, error) {
+func (a *Article) ParseFile(path string) (string, error) {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return "", err
 	}
-	err = this.SplitSource(data, 2)
+	err = a.SplitSource(data, 2)
 	if err != nil {
 		return "", err
 	}
-	this.SetFormat(filepath.Ext(path))
-	name := this.Meta.Slug
+	a.SetFormat(filepath.Ext(path))
+	name := a.Meta.Slug
 	if name == "" {
 		base := filepath.Base(path)
 		ext := filepath.Ext(base)
