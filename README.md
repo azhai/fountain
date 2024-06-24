@@ -24,4 +24,4 @@ go build -ldflags "-s -w" -o fountain.exe cmd\fountain\main.go
 
 ## 浅色主题
 
-![Light theme](./example/themes/larecipe/static/screen.png)
+![Light theme](./example/themes/default/static/screen.png)
