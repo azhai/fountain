@@ -1,5 +1,5 @@
 title: "John's Tech Blog"
-theme: larecipe
+theme: default
 port: 8080
 sort: date
 top_tags:

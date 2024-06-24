@@ -5,7 +5,7 @@ Fountain is an static blog generator developed by Golang.
 ## Usage
 
 ```
-./fountain -r example/ -v -c
+./fountain -r example/ -t night -v -c
 ```
 
 ## Windows
