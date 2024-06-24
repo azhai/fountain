@@ -1,62 +1,78 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="{{.Conf.Lang}}">
-<head>
-    <meta charset="utf-8">
-    <title>{{.Blog.Meta.Title}} | {{.Conf.Title}}</title>
-    <meta name="keywords" content="{{range .Blog.Meta.Tags}}{{.}},{{end}}">
-    <meta name="description" content="{{.Blog.Meta.Title}}">
-    {{template "_head.html" .}}
-    <link rel="stylesheet" href="{{.UrlPre}}/static/css/dracula.css">
-</head>
-<body>
+    <head>
+        <meta charset="utf-8" />
+        <title>{{.Blog.Meta.Title}} | {{.Conf.Title}}</title>
+        <meta
+            name="keywords"
+            content="{{range .Blog.Meta.Tags}}{{.}},{{end}}"
+        />
+        <meta name="description" content="{{.Blog.Meta.Title}}" />
+        {{template "_head.html" .}}
+        <link rel="stylesheet" href="{{.UrlPre}}/static/css/dracula.css" />
+    </head>
+    <body>
+        <div id="layout" class="pure-g">
+            {{template "_sidebar.html" .}}
 
-<div id="layout" class="pure-g">
-    {{template "_sidebar.html" .}}
+            <div class="content pure-u-1 pure-u-md-3-4">
+                <div>
+                    <!-- A wrapper for all the blog posts -->
+                    <div class="posts">
+                        <section class="post">
+                            <header class="post-header">
+                                {{if .Blog.Meta.Author}}
+                                <img
+                                    width="48"
+                                    height="48"
+                                    alt="{{.Blog.Author.ID}}"
+                                    class="post-avatar"
+                                    src="{{.UrlPre}}/{{.Blog.Author.Avatar}}"
+                                />
+                                {{end}}
 
-    <div class="content pure-u-1 pure-u-md-3-4">
-        <div>
+                                <a href="{{.UrlPre}}/{{.Blog.Archive.Url}}">
+                                    <h2 class="post-title">
+                                        {{.Blog.Meta.Title}}
+                                    </h2>
+                                </a>
 
-            <!-- A wrapper for all the blog posts -->
-            <div class="posts">
+                                <p class="post-meta">
+                                    {{if .Blog.Meta.Author}} By
+                                    <a class="post-author" href="#"
+                                        >{{.Blog.Author.Name}}</a
+                                    >
+                                    {{end}} at
+                                    <a class="post-date" href="#"
+                                        >{{.Blog.Meta.Date}}</a
+                                    >
+                                    under {{$urlpre := .UrlPre}}
+                                    <span class="tags"
+                                        >{{range $tag := .Blog.Meta.Tags}}
+                                        <a
+                                            class="post-tag"
+                                            href="{{$urlpre}}/tags/{{$tag}}.html"
+                                            >{{$tag}}</a
+                                        >
+                                        {{end}}</span
+                                    >
+                                </p>
+                            </header>
 
-                <section class="post">
-                    <header class="post-header">
-                        {{if .Blog.Meta.Author}}
-                        <img width="48" height="48" alt="{{.Blog.Author.ID}}" class="post-avatar" src="{{.UrlPre}}/{{.Blog.Author.Avatar}}">
-                        {{end}}
-
-                        <a href="{{.UrlPre}}/{{.Blog.Archive.Url}}">
-                            <h2 class="post-title">{{.Blog.Meta.Title}}</h2>
-                        </a>
-
-                        <p class="post-meta">
-                            {{if .Blog.Meta.Author}}
-                                By <a class="post-author" href="#">{{.Blog.Author.Name}}</a>
-                            {{end}}
-                            at <a class="post-date" href="#">{{.Blog.Meta.Date}}</a>
-                            under
-                            {{$urlpre := .UrlPre}}
-                            <span class="tags">{{range $tag := .Blog.Meta.Tags}}
-                                <a class="post-tag" href="{{$urlpre}}/tag/{{$tag}}.html">{{$tag}}</a>
-                            {{end}}</span>
-                        </p>
-                    </header>
-
-                    <div class="post-description">
-                        <p>
-                            {{.Blog.Content}}
-                        </p>
+                            <div class="post-description">
+                                <p>{{.Blog.Content}}</p>
+                            </div>
+                        </section>
                     </div>
-                </section>
+
+                    {{template "_footer.html" .}}
+                </div>
             </div>
-
-            {{template "_footer.html" .}}
         </div>
-    </div>
-</div>
 
-<script src="{{.UrlPre}}/static/js/highlight.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
-
-</body>
+        <script src="{{.UrlPre}}/static/js/highlight.js"></script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    </body>
 </html>

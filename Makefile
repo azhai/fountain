@@ -1,23 +1,31 @@
-BINNAME=fountain-linux-amd64
-RELEASE=-s -w
-UPXBIN=/usr/local/bin/upx
-GOBIN=/usr/local/bin/go
-GOOS=$(shell uname -s | tr [A-Z] [a-z])
-GOARGS=GOARCH=amd64 CGO_ENABLED=0
-GOBUILD=$(GOARGS) $(GOBIN) build -ldflags="$(RELEASE)"
+COMMANDS = fountain
 
-.PHONY: all
+ifndef GOAMD64
+	GOAMD64 = v2
+endif
+GOOS = $(shell uname -s | tr [A-Z] [a-z])
+ifeq ($(GOOS), darwin)
+	GOBIN = /usr/local/go/bin/go
+	UPXBIN = /usr/local/bin/upx
+else
+	GOBIN = /usr/local/bin/go
+	UPXBIN = /usr/bin/upx
+endif
+RELEASE = -s -w
+GOARGS = GOOS=$(GOOS) GOARCH=amd64 GOAMD64=$(GOAMD64) CGO_ENABLED=1
+GOBUILD = $(GOARGS) $(GOBIN) build -ldflags="$(RELEASE)"
+
+.PHONY: all build clean upx upxx $(COMMANDS)
 all: clean build
+$(COMMANDS):
+	@echo "Compile $@ ..."
+	$(GOBUILD) -o $@ ./cmd/$@
+build: $(COMMANDS)
+	@echo "Build success."
 clean:
-	rm -f $(BINNAME)
-	@echo Clean all.
-build:
-	@echo Compile $(BINNAME) ...
-	GOOS=$(GOOS) $(GOBUILD) -o $(BINNAME) .
-	@echo Build success.
-upx: build
-	$(UPXBIN) $(BINNAME)
-upxx: build
-	$(UPXBIN) --ultra-brute $(BINNAME)
-vend:
-	GOOS=$(GOOS) $(GOBUILD) -mod=vendor -o $(BINNAME) .
+	rm -f $(COMMANDS)
+	@echo "Remove old files."
+upx: clean build
+	$(UPXBIN) $(COMMANDS)
+upxx: clean build
+	$(UPXBIN) --ultra-brute $(COMMANDS)

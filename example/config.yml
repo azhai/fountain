@@ -1,14 +1,13 @@
-
 title: "John's Tech Blog"
-theme: default
+theme: larecipe
 port: 8080
 sort: date
 top_tags:
-    - help
-    - markdown
+  - help
+  - markdown
 
 authors:
-    john:
-        name: "John Doe"
-        avatar: "static/avatars/john.jpg"
-        intro:
+  john:
+    name: "John Doe"
+    avatar: "static/avatars/john.jpg"
+    intro:

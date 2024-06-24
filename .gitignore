@@ -10,6 +10,6 @@
 *.vscode
 blog/
 example/public/
-fountain-*
-go_mod_up.awk
+./fountain
+./fountain.exe
 tests/
