@@ -9,10 +9,11 @@ import (
 
 	"fountain/article"
 	"fountain/utils"
+
 	bf2 "gopkg.in/russross/blackfriday.v2"
 )
 
-const VERSION = "0.41.2"
+const VERSION = "0.6.0"
 
 var (
 	serve   bool   //运行WEB服务
@@ -56,7 +57,7 @@ func main() {
 
 func run() {
 	site := article.NewWebsite(root)
-	site.LoadConfig("config.yml")
+	site.LoadConfig("config.toml")
 	if theme != "" {
 		site.Conf.Theme = theme
 	}

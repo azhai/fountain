@@ -3,7 +3,7 @@ package article
 import (
 	"fmt"
 
-	"gopkg.in/yaml.v2"
+	"github.com/BurntSushi/toml"
 )
 
 const (
@@ -11,8 +11,8 @@ const (
 	MODE_FILE = 0666
 )
 
-func YamlParse(data []byte, storage interface{}) error {
-	return yaml.Unmarshal(data, storage)
+func ParseConfData(data []byte, target interface{}) error {
+	return toml.Unmarshal(data, target)
 }
 
 type Table map[string]interface{}

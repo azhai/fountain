@@ -42,7 +42,7 @@ func (w *Website) LoadConfig(path string) error {
 		w.Debug("ERROR:", err)
 		return err
 	}
-	YamlParse(data, &w.Conf)
+	ParseConfData(data, &w.Conf)
 	return nil
 }
 
@@ -97,6 +97,17 @@ func (w Website) GetArchiveString(idx int) string {
 	return lnk.ToString("@URLPRE@")
 }
 
+func (w Website) GetDirArchives(name string) []*Link {
+	var arches []*Link
+	if indexes, ok := w.ArchDirs[name]; ok {
+		for _, idx := range indexes {
+			lnk := w.Archives[idx]
+			arches = append(arches, lnk)
+		}
+	}
+	return arches
+}
+
 func (w Website) GetTagArchives(name string) []*Link {
 	var arches []*Link
 	if indexes, ok := w.ArchTags[name]; ok {
@@ -145,6 +156,21 @@ func (w *Website) CreateIndex(pageSize int) error {
 	return err
 }
 
+func (w Website) CreateDirs() error {
+	var err error
+	for name := range w.ArchDirs {
+		url := fmt.Sprintf("%s/index.html", name)
+		w.Debug("√", url)
+		ctx := Table{"Site": w, "Dir": name}
+		err = w.Prepare(name, ctx, false)
+		if err != nil {
+			return err
+		}
+		err = w.Skin.Render("dir", url, ctx)
+	}
+	return err
+}
+
 func (w Website) CreateTags() error {
 	var err error
 	createDir := true
@@ -162,27 +188,26 @@ func (w Website) CreateTags() error {
 	return err
 }
 
-func (w Website) CreatePages() error {
-	thDir, createDir := w.Skin.GetDir(), true
-	pages, err := filepath.Glob(thDir + "pages/*.html")
-	if err != nil {
-		return err
-	}
-	thPrelen := len(thDir)
+func (w Website) GlobPages(thDir string) ([]string, error) {
+	return filepath.Glob(thDir + "pages/*.html")
+}
+
+func (w Website) CreatePages(pages []string, thPrelen int) (err error) {
+	createDir := true
 	for _, p := range pages {
 		url := p[thPrelen:]
 		w.Debug("√", url)
 		ctx := Table{"Site": w, "Tag": ""}
 		err = w.Prepare("pages", ctx, createDir)
 		if err != nil {
-			return err
+			return
 		}
 		createDir = false
 		if name := filepath.Base(url); strings.HasSuffix(name, ".html") {
 			err = w.Skin.Render(name, url, ctx)
 		}
 	}
-	return err
+	return
 }
 
 func (w Website) Prepare(dir string, cxt Table, createDir bool) (err error) {
@@ -285,10 +310,24 @@ func (w *Website) BuildFiles() error {
 	if err == nil {
 		w.Debug("Index:")
 		w.CreateIndex(w.Conf.Limit)
-		w.Debug("Tags:")
-		w.CreateTags()
-		w.Debug("Pages:")
-		w.CreatePages()
+
+		if w.Skin.HasTemplate("dir") {
+			w.Debug("Dirs:")
+			w.CreateDirs()
+		}
+		if w.Skin.HasTemplate("tag") {
+			w.Debug("Tags:")
+			w.CreateTags()
+		}
+
+		var pages []string
+		thDir := w.Skin.GetDir()
+		pages, err = w.GlobPages(thDir)
+		if err == nil && len(pages) > 0 {
+			w.Debug("Pages:")
+			w.CreatePages(pages, len(thDir))
+		}
+
 		w.Skin.CopyAssets("static")
 		//这个放在复制静态文件之后，可以不用创建目录
 		w.Debug("Static:")

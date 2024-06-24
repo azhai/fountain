@@ -1,7 +1,9 @@
 var content = '<ul>'
     {{range $dir, $files := .ArchDirs}}
     + '<li>'
-    + '<h2>{{$dir}}</h2>'
+    + '<a href="@URLPRE@/{{$dir}}/index.html">'
+    + '<h3 class="item-title">{{$dir}}</h3 >'
+    + '</a >'
     + '<ul>'
         {{range $idx := $files}}
         + '<li>{{getArchiveString $idx}}</li>'

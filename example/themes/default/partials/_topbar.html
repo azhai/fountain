@@ -1,39 +1,55 @@
-<div class="offcanvas visible-xs">
-    <ul class="offcanvas__nav">
-        <li><a href="{{.UrlPre}}/index.html">Homepage</a></li>
-        <li><a href="{{.UrlPre}}/pages/demo.html">Demo Page</a></li>
-        <li><a href="{{.UrlPre}}/pages/err404.html">404 Page</a></li>
-    </ul><!-- /.offcanvas__nav -->
-</div><!-- /.offcanvas -->
+<larecipe-nav type="white"  effect="light" expand fixed style="height: 4rem; top: 3px;">
+    
+    <div slot="brand" style="display: flex; align-items: center;">
+        <a class="navbar-brand"  href="{{.UrlPre}}/index.html" >
+            <img src="{{.UrlPre}}/static/logo.svg" alt="logo"/>
+            <span>{{.Conf.Title}}</span>
+        </a>
+        <larecipe-switch class="mt-2" v-model="sidebar"></larecipe-switch>
+    </div>
 
-<header class="site-header">
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12">
+    <div class="row" slot="content-header" slot-scope="{closeMenu}">
+        <div class="col-6 collapse-brand">
+            <a href="{{.UrlPre}}/index.html">{{.Conf.Title}}</a>
+        </div>
+        <div class="col-6 collapse-close">
+            <larecipe-close-button @click="closeMenu"></larecipe-close-button>
+        </div>
+    </div>
 
-                <a href="{{.UrlPre}}/index.html" class="site-header__logo">{{.Conf.Title}}</a>
+    <div class="navbar-nav ml-lg-auto">
+                
+        <larecipe-button id="search-button" :class="{'btn-primary': searchBox}" 
+            @click="searchBox = ! searchBox" type="link" style="width: 100%;">
+            <i class="fa fa-search"></i>
+        </larecipe-button>
+    
+        {{if .Conf.Github.user}}
+        <larecipe-button tag="a" id="repository_button" 
+            target="__blank" href="https://github.com/{{.Conf.Github.user}}/{{.Conf.Github.repo}}" 
+            slot="title" type="outline-primary" style="width: 100%">
+            <i class="fa fa-github"></i>
+        </larecipe-button>
+        {{end}}
+    
+        <larecipe-dropdown>
+            <larecipe-button slot="title" type="primary" class="dropdown-toggle" style="width: 100%">
+                zh
+            </larecipe-button>
+            <li role="presentation">
+                <a class="dropdown-item" href="{{.UrlPre}}/en/index.html">en</a>
+            </li>
+            <li role="presentation">
+                <a class="dropdown-item" href="{{.UrlPre}}/index.html">zh</a>
+            </li>
+        </larecipe-dropdown>
 
-                <ul class="site-header__nav hidden-xs">
-                    <li><a href="{{.UrlPre}}/index.html">Homepage</a></li>
-                    <li><a href="{{.UrlPre}}/pages/demo.html">Demo Page</a></li>
-                    <li><a href="{{.UrlPre}}/pages/err404.html">404 Page</a></li>
-                    {{if .Conf.Github.user}}
-                    <larecipe-button tag="a" id="repository_button"
-                        target="__blank" href="https://github.com/{{.Conf.Github.user}}/{{.Conf.Github.repo}}"
-                        slot="title" type="outline-primary" style="width: 100%">
-                        <i class="fa fa-github"></i>
-                    </larecipe-button>
-                    {{end}}
-                </ul><!-- /.site-header__nav -->
-
-                <button class="offcanvas-toggle visible-xs">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button><!-- /.offcanvas-toggle -->
-
-            </div><!-- /.col -->
-        </div><!-- /.row -->
-    </div><!-- /.container -->
-</header><!-- /.site-header -->
-
+    </div>
+    
+</larecipe-nav>
+       
+<algolia-search-box v-if="searchBox" @close="searchBox = false"
+    algolia-key="01b739117b5d45d29358cfba9f684e02"
+    algolia-index="larecipe"
+    version="0.3">
+</algolia-search-box>

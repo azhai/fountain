@@ -36,6 +36,13 @@ func NewTheme(dir string) *Theme {
 	}
 }
 
+func (t *Theme) HasTemplate(name string) bool {
+	if _, ok := t.TplDict[name]; ok {
+		return true
+	}
+	return utils.PathExist(filepath.Join(t.dir, name+".html"))
+}
+
 func (t *Theme) GetOrCreate(name, path string, incl bool) *template.Template {
 	var err error
 	if tpl, ok := t.TplDict[name]; ok {

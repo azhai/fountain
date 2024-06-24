@@ -109,7 +109,7 @@ func (a *Article) SetData(name string, chunk []byte) int {
 		return 0
 	}
 	if name == "Meta" {
-		YamlParse([]byte(text), &a.Meta)
+		ParseConfData([]byte(text), &a.Meta)
 		if a.Meta.Author != "" {
 			a.SetDummyAuthor(a.Meta.Author)
 		}

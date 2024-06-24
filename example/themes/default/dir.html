@@ -26,8 +26,11 @@
                         class="col-12 col-md-9 article"
                         :class="{'expanded': ! sidebar}"
                     >
+                        <h1 class="content-subhead">DIR: {{.Dir}}</h1>
+                        <hr />
+
                         {{$urlpre := .UrlPre}} {{range $lnk :=
-                        .Cata.GetArchives}}
+                        .Site.GetDirArchives .Dir}}
                         <section class="post">
                             <a href="{{$urlpre}}/{{$lnk.Url}}">
                                 <h3 class="item-title">{{$lnk.Title}}</h3>
@@ -35,15 +38,6 @@
                             <p class="item-meta">{{$lnk.Note}}</p>
                         </section>
                         {{end}}
-
-                        <footer class="site" style="text-align: center">
-                            <span style="margin: 0 10px"
-                                >{{.Cata.GetPrev}}</span
-                            >
-                            <span style="margin: 0 10px"
-                                >{{.Cata.GetNext}}</span
-                            >
-                        </footer>
 
                         <hr />
                     </div>
