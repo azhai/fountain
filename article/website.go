@@ -329,7 +329,7 @@ func (w *Website) BuildFiles() error {
 		}
 
 		w.Skin.CopyAssets("static")
-		//这个放在复制静态文件之后，可以不用创建目录
+		// 这个放在复制静态文件之后，可以不用创建目录
 		w.Debug("Static:")
 		path := "static/js/app.js"
 		w.Skin.CreateSidebar(path, w.ArchDirs)

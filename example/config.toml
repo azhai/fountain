@@ -1,10 +1,10 @@
-title =  "John's Tech Blog"
+title = "John's Tech Blog"
 theme = "default"
 port = 8080
 sort = "date"
 top_tags = ["help", "markdown"]
 
 [authors.john]
-    name = "John Doe"
-    avatar = "static/avatars/john.jpg"
-    intro = ""
+name = "John Doe"
+avatar = "static/avatars/john.jpg"
+intro = ""

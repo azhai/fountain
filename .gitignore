@@ -10,6 +10,6 @@
 *.vscode
 blog/
 example/public/
-./fountain
-./fountain.exe
+fountain
+fountain.exe
 tests/

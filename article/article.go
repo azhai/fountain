@@ -130,10 +130,10 @@ func (a *Article) SplitSource(data []byte, times int) error {
 	for {
 		times--
 		size = bytes.Index(data[idx:], sep)
-		//不是最后一段，元数据还没有找到
+		// 不是最后一段，元数据还没有找到
 		if size >= 0 && times >= 0 && a.Meta.Title == "" {
 			length = a.SetData("Meta", data[idx:idx+size])
-			//空段或刚找到元数据
+			// 空段或刚找到元数据
 			if length == 0 || a.Meta.Title != "" {
 				idx += size + offset
 				continue

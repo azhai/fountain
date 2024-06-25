@@ -47,7 +47,7 @@ func CopyFile(src, dst string) (err error) {
 // 当dst结尾带斜杠时，复制为dst下的子目录
 func CopyDir(src, dst string) (err error) {
 	if length := len(src); src[length-1] == '/' {
-		src = src[:length-1] //去掉结尾的斜杠
+		src = src[:length-1] // 去掉结尾的斜杠
 	}
 	info, err := os.Stat(src)
 	if err != nil || !info.IsDir() {

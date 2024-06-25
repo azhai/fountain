@@ -17,7 +17,8 @@ Violets are blue
 Roses are red
 Violets are blue
 
-哦,这里有一件事我还是无法忍受的,那就是使用多个下划线分割文字,类似于perform_complicated_task 或者 do_this_and_do_that_and_another_thing.
+哦,这里有一件事我还是无法忍受的,那就是使用多个下划线分割文字,类似于perform_complicated_task 或者
+do_this_and_do_that_and_another_thing.
 
 ## 有一点GitHub的味道
 
@@ -50,21 +51,22 @@ Violets are blue
 
 让我们开始疯狂:
 
-1.  这是一个两个段落的列表 Lorem ipsum dolorsit amet, consectetuer adipiscing elit. Aliquam hendreritmi posuere lectus.
+1. 这是一个两个段落的列表 Lorem ipsum dolorsit amet, consectetuer adipiscing elit. Aliquam hendreritmi posuere lectus.
 
-    Vestibulum enim wisi, viverra nec, fringilla in, laoreetvitae, risus. Donec sit amet nisl. Aliquam semper ipsumsit amet velit.
+   Vestibulum enim wisi, viverra nec, fringilla in, laoreetvitae, risus. Donec sit amet nisl. Aliquam semper ipsumsit
+   amet velit.
 
-2.  Suspendisse id sem consectetuer libero luctus adipiscing.
+2. Suspendisse id sem consectetuer libero luctus adipiscing.
 
 那么列表中的代码怎么办呢? **in** 疯了吧,是不是?
 
-1.  在 Ruby 中你可能要映射,就像这样:
+1. 在 Ruby 中你可能要映射,就像这样:
 
-        ['a', 'b'].map { |x| x.uppercase }
+       ['a', 'b'].map { |x| x.uppercase }
 
-2.  在Rails, 你可以做一个简写:
+2. 在Rails, 你可以做一个简写:
 
-        ['a', 'b'].map(&:uppercase)
+       ['a', 'b'].map(&:uppercase)
 
 一些人更喜欢定义列表
 
@@ -144,7 +146,9 @@ I get 10 times more traffic from [Google] [1] than from
 [Yahoo] [2] or [MSN] [3].
 
 [1]: http://google.com/ "Google"
+
 [2]: http://search.yahoo.com/ "Yahoo Search"
+
 [3]: http://search.msn.com/ "MSN Search"
 
 _查看以上内容的源码 [source of this content](http://github.github.com/github-flavored-markdown/sample_content.html)._

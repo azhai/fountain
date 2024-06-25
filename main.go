@@ -4,24 +4,26 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 	"plugin"
 	"runtime"
 
+	"github.com/gofiber/fiber/v3"
+	bf2 "gopkg.in/russross/blackfriday.v2"
+
 	"fountain/article"
 	"fountain/utils"
-
-	bf2 "gopkg.in/russross/blackfriday.v2"
 )
 
-const VERSION = "0.6.0"
+const VERSION = "0.6.1"
 
 var (
-	serve   bool   //运行WEB服务
-	port    uint   //服务端口
-	root    string //博客根目录
-	theme   string //皮肤主题
-	clean   bool   //清理旧输出
-	verbose bool   //输出详情
+	serve   bool   // 运行WEB服务
+	port    uint   // 服务端口
+	root    string // 博客根目录
+	theme   string // 皮肤主题
+	clean   bool   // 清理旧输出
+	verbose bool   // 输出详情
 )
 
 func init() {
@@ -37,7 +39,7 @@ func init() {
 
 func usage() {
 	desc := `fountain version: v%s
-Usage: fountain [-t theme] [-r root] [-p port] [-scv]
+Usage: fountain [-r root] [-s] [-p port] [-t theme] [-c] [-v]
 
 Options:
 `
@@ -78,22 +80,27 @@ func run() {
 			fmt.Println(data...)
 		}
 	}
-	if serve || port > 0 {
+
+	if clean {
+		fmt.Println("Clean ...")
+		if len(site.Conf.Public) >= 3 {
+			pubDir := site.Root + site.Conf.Public
+			utils.CleanDir(pubDir)
+		}
+	}
+	fmt.Println("Build ...")
+	site.InitTheme()
+	site.BuildFiles()
+
+	if serve || port >= 0 {
 		if port == 0 || port > 65535 {
 			port = site.Conf.Port
 		}
 		fmt.Printf("Server at :%d\n", port)
-	} else {
-		if clean {
-			fmt.Println("Clean ...")
-			if len(site.Conf.Public) >= 3 {
-				pubDir := site.Root + site.Conf.Public
-				utils.CleanDir(pubDir)
-			}
-		}
-		fmt.Println("Build ...")
-		site.InitTheme()
-		site.BuildFiles()
+
+		app := fiber.New()
+		app.Static("/", filepath.Join(root, "public"))
+		app.Listen(fmt.Sprintf("0.0.0.0:%d", port))
 	}
 }
 

@@ -21,8 +21,8 @@ func AddUrlPre(dir string) string {
 }
 
 type Theme struct {
-	dir      string //结尾有斜杠
-	PubDir   string //结尾有斜杠
+	dir      string // 结尾有斜杠
+	PubDir   string // 结尾有斜杠
 	FunDict  template.FuncMap
 	TplDict  map[string]*template.Template
 	WithSide bool

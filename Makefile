@@ -1,4 +1,5 @@
-COMMANDS = fountain
+SINGLETON = fountain
+COMMANDS =
 
 ifndef GOAMD64
 	GOAMD64 = v2
@@ -15,17 +16,20 @@ RELEASE = -s -w
 GOARGS = GOOS=$(GOOS) GOARCH=amd64 GOAMD64=$(GOAMD64) CGO_ENABLED=1
 GOBUILD = $(GOARGS) $(GOBIN) build -ldflags="$(RELEASE)"
 
-.PHONY: all build clean upx upxx $(COMMANDS)
+.PHONY: all build clean upx upxx $(SINGLETON) $(COMMANDS)
 all: clean build
+$(SINGLETON):
+	@echo "Compile $(SINGLETON) ..."
+	$(GOBUILD) -o $(SINGLETON) *.go
 $(COMMANDS):
 	@echo "Compile $@ ..."
 	$(GOBUILD) -o $@ ./cmd/$@
-build: $(COMMANDS)
+build: $(SINGLETON) $(COMMANDS)
 	@echo "Build success."
 clean:
-	rm -f $(COMMANDS)
+	rm -f $(SINGLETON) $(COMMANDS)
 	@echo "Remove old files."
 upx: clean build
-	$(UPXBIN) $(COMMANDS)
+	$(UPXBIN) $(SINGLETON) $(COMMANDS)
 upxx: clean build
-	$(UPXBIN) --ultra-brute $(COMMANDS)
+	$(UPXBIN) --ultra-brute $(SINGLETON) $(COMMANDS)
