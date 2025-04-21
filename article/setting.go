@@ -2,18 +2,12 @@ package article
 
 import (
 	"fmt"
-
-	"github.com/BurntSushi/toml"
 )
 
 const (
 	MODE_DIR  = 0755
 	MODE_FILE = 0666
 )
-
-func ParseConfData(data []byte, target interface{}) error {
-	return toml.Unmarshal(data, target)
-}
 
 type Table map[string]interface{}
 
@@ -56,6 +50,7 @@ type User struct {
 }
 
 type Link struct {
+	Dir    string
 	Url    string
 	Anchor string
 	Title  string
@@ -67,7 +62,7 @@ func (l Link) ToString(urlpre string) string {
 	if l.Anchor != "" {
 		url += "#" + l.Anchor
 	}
-	tpl := `<a href="%s" title="%s">%s</a>`
+	tpl := `<a href="%s" class="art-link" title="%s">%s</a>`
 	return fmt.Sprintf(tpl, url, l.Note, l.Title)
 }
 

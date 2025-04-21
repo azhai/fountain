@@ -29,11 +29,13 @@ type Theme struct {
 }
 
 func NewTheme(dir string) *Theme {
-	return &Theme{
+	thm := &Theme{
 		dir:     dir,
 		FunDict: make(map[string]interface{}),
 		TplDict: make(map[string]*template.Template),
 	}
+	thm.WithSide = thm.HasTemplate("sidebar")
+	return thm
 }
 
 func (t *Theme) HasTemplate(name string) bool {
@@ -76,7 +78,7 @@ func (t Theme) CopyAssets(dir string) (err error) {
 	return
 }
 
-func (t Theme) CreateSidebar(path string, archDirs Categoris) (err error) {
+func (t Theme) CreateSidebar(path string, archDirs map[string][]string) (err error) {
 	file := t.dir + "sidebar.html"
 	if utils.PathExist(file) {
 		ctx := Table{"ArchDirs": archDirs, "UrlPre": AddUrlPre("")}

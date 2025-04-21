@@ -9,6 +9,8 @@ import (
 	"runtime"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/static"
+	"github.com/k0kubun/pp"
 	bf2 "gopkg.in/russross/blackfriday.v2"
 
 	"fountain/article"
@@ -59,7 +61,10 @@ func main() {
 
 func run() {
 	site := article.NewWebsite(root)
-	site.LoadConfig("config.toml")
+	site.LoadConfig("config.yaml")
+	if verbose {
+		pp.Println(site.Conf)
+	}
 	if theme != "" {
 		site.Conf.Theme = theme
 	}
@@ -98,8 +103,9 @@ func run() {
 		}
 		fmt.Printf("Server at :%d\n", port)
 
+		pudDir := filepath.Join(root, "public")
 		app := fiber.New()
-		app.Static("/", filepath.Join(root, "public"))
+		app.Use("/", static.New(pudDir))
 		app.Listen(fmt.Sprintf("0.0.0.0:%d", port))
 	}
 }

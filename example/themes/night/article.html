@@ -22,40 +22,23 @@
                         <section class="post">
                             <header class="post-header">
                                 {{if .Blog.Meta.Author}}
-                                <img
-                                    width="48"
-                                    height="48"
-                                    alt="{{.Blog.Author.ID}}"
-                                    class="post-avatar"
-                                    src="{{.UrlPre}}/{{.Blog.Author.Avatar}}"
-                                />
+                                <img width="48" height="48" alt="{{.Blog.Author.ID}}"
+                                    class="post-avatar" src="{{.UrlPre}}/{{.Blog.Author.Avatar}}" />
                                 {{end}}
 
                                 <a href="{{.UrlPre}}/{{.Blog.Archive.Url}}">
-                                    <h2 class="post-title">
-                                        {{.Blog.Meta.Title}}
-                                    </h2>
+                                    <h2 class="post-title">{{.Blog.Meta.Title}}</h2>
                                 </a>
 
                                 <p class="post-meta">
-                                    {{if .Blog.Meta.Author}} By
-                                    <a class="post-author" href="#"
-                                        >{{.Blog.Author.Name}}</a
-                                    >
+                                    {{if .Blog.Meta.Author}}
+                                    By <a class="post-author" href="#">{{.Blog.Author.Name}}</a>
                                     {{end}} at
-                                    <a class="post-date" href="#"
-                                        >{{.Blog.Meta.Date}}</a
-                                    >
+                                    <a class="post-date" href="#">{{.Blog.Meta.Date}}</a>
                                     under {{$urlpre := .UrlPre}}
-                                    <span class="tags"
-                                        >{{range $tag := .Blog.Meta.Tags}}
-                                        <a
-                                            class="post-tag"
-                                            href="{{$urlpre}}/tags/{{$tag}}.html"
-                                            >{{$tag}}</a
-                                        >
-                                        {{end}}</span
-                                    >
+                                    <span class="tags">{{range $tag := .Blog.Meta.Tags}}
+                                        <a class="post-tag" href="{{$urlpre}}/tags/{{$tag}}.html">{{$tag}}</a>
+                                    {{end}}</span >
                                 </p>
                             </header>
 
@@ -71,8 +54,6 @@
         </div>
 
         <script src="{{.UrlPre}}/static/js/highlight.js"></script>
-        <script>
-            hljs.initHighlightingOnLoad();
-        </script>
+        <script>hljs.initHighlightingOnLoad();</script>
     </body>
 </html>

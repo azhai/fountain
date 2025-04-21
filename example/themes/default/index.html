@@ -1,62 +1,38 @@
-<!doctype html>
-<html lang="{{.Conf.Lang}}">
-    <head>
-        <meta charset="utf-8" />
-        <title>{{.Conf.Title}}</title>
-        {{template "_head.html" .}}
-    </head>
-    <body>
-        <div id="app">
-            <div
-                class="bg-gradient-primary"
-                style="position: sticky; top: 0; z-index: 2333; height: 3px"
-            ></div>
-            {{template "_topbar.html" .}}
+<!DOCTYPE html>
+<html lang="{{.Conf.Lang}}" class="h-100">
+<head>
+    {{template "_head.html" .}}
+    <title>{{.Conf.Title}}</title>
+</head>
+<body class="bg-body d-flex flex-column h-100">
 
-            <div class="container-fluid pl-0 documentation is-dark">
-                <div class="row">
-                    <div
-                        class="col-12 col-md-3 sidebar"
-                        :class="[{'is-hidden': ! sidebar}, {'is-dark': forceDarkSidebar}, {'is-light': forceLightSidebar}]"
-                    >
-                        <ul id="sidebar"></ul>
-                    </div>
+{{template "_topbar.html" .}}
 
-                    <div
-                        class="col-12 col-md-9 article"
-                        :class="{'expanded': ! sidebar}"
-                    >
-                        {{$urlpre := .UrlPre}} {{range $lnk :=
-                        .Cata.GetArchives}}
-                        <section class="post">
-                            <a href="{{$urlpre}}/{{$lnk.Url}}">
-                                <h3 class="item-title">{{$lnk.Title}}</h3>
-                            </a>
-                            <p class="item-meta">{{$lnk.Note}}</p>
-                        </section>
-                        {{end}}
+<main><div class="container">
+    <div class="row">
 
-                        <footer class="site" style="text-align: center">
-                            <span style="margin: 0 10px"
-                                >{{.Cata.GetPrev}}</span
-                            >
-                            <span style="margin: 0 10px"
-                                >{{.Cata.GetNext}}</span
-                            >
-                        </footer>
+      {{template "_sidebar.html" .}}
 
-                        <hr />
-                    </div>
-                </div>
-            </div>
+        <div class="col ft-guide mt-3 px-lg-3 px-xl-5" data-bs-spy="scroll" data-bs-target="#page-toc" data-bs-offset="0" tabindex="0">
+            {{$urlpre := .UrlPre}}
+            {{range $lnk := .Cata.GetArchives}}
+            <section class="post">
+                <a href="{{$urlpre}}/{{$lnk.Url}}">
+                    <h3 class="item-title">{{$lnk.Title}}</h3>
+                </a>
+                <p class="item-meta">{{$lnk.Note}}</p>
+            </section>
+            {{end}}
 
-            <larecipe-back-to-top></larecipe-back-to-top>
+            <footer class="site" style="text-align:center">
+                <span style="margin:0 10px">{{.Cata.GetPrev}}</span>
+                <span style="margin:0 10px">{{.Cata.GetNext}}</span>
+            </footer>
         </div>
 
-        <script src="{{.UrlPre}}/static/js/bundle.js"></script>
-        <script src="{{.UrlPre}}/static/js/app.js"></script>
-        <script type="text/javascript">
-            loadSidebar("{{.UrlPre}}");
-        </script>
-    </body>
+    </div>
+</div></main>
+
+<script src="{{.UrlPre}}/static/js/bootstrap.min.js"></script>
+</body>
 </html>

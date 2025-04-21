@@ -1,85 +1,81 @@
-<!doctype html>
-<html lang="{{.Conf.Lang}}">
-    <head>
-        <meta charset="utf-8" />
-        <title>{{.Blog.Meta.Title}} | {{.Conf.Title}}</title>
-        <meta
-            name="keywords"
-            content="{{range .Blog.Meta.Tags}}{{.}},{{end}}"
-        />
-        <meta name="description" content="{{.Blog.Meta.Title}}" />
-        {{template "_head.html" .}}
-        <link rel="stylesheet" href="{{.UrlPre}}/static/css/dracula.css" />
-    </head>
-    <body>
-        <div id="app">
-            <div
-                class="bg-gradient-primary"
-                style="position: sticky; top: 0; z-index: 2333; height: 3px"
-            ></div>
-            {{template "_topbar.html" .}}
+<!DOCTYPE html>
+<html lang="{{.Conf.Lang}}" class="h-100">
+<head>
+    {{template "_head.html" .}}
+    <link rel="stylesheet" href="{{.UrlPre}}/static/css/dracula.css">
+    <title>{{.Blog.Meta.Title}} | {{.Conf.Title}}</title>
+</head>
+<body class="bg-body d-flex flex-column h-100">
 
-            <div class="container-fluid pl-0 documentation is-dark">
-                <div class="row">
-                    <div
-                        class="col-12 col-md-3 sidebar"
-                        :class="[{'is-hidden': ! sidebar}, {'is-dark': forceDarkSidebar}, {'is-light': forceLightSidebar}]"
-                    >
-                        <ul id="sidebar"></ul>
-                    </div>
+{{template "_topbar.html" .}}
 
-                    <div
-                        class="col-12 col-md-9 article"
-                        :class="{'expanded': ! sidebar}"
-                    >
-                        <a href="{{.UrlPre}}/{{.Blog.Archive.Url}}">
-                            <h1 class="post-title">{{.Blog.Meta.Title}}</h1>
-                        </a>
+<main><div class="container">
+    <div class="row">
 
-                        <p class="post-meta">
-                            {{if .Blog.Meta.Author}}
-                            <img
-                                width="32"
-                                height="32"
-                                alt="{{.Blog.Author.ID}}"
-                                class="post-avatar"
-                                src="{{.UrlPre}}/{{.Blog.Author.Avatar}}"
-                            />
-                            <a class="post-author" href="#"
-                                >{{.Blog.Author.Name}}</a
-                            >
-                            {{end}} at
-                            <a class="post-date" href="#"
-                                >{{.Blog.Meta.Date}}</a
-                            >
-                            under {{$urlpre := .UrlPre}}
-                            <span class="tags"
-                                >{{range $tag := .Blog.Meta.Tags}}
-                                <a
-                                    class="post-tag"
-                                    href="{{$urlpre}}/tags/{{$tag}}.html"
-                                    >{{$tag}}</a
-                                >
-                                {{end}}</span
-                            >
-                        </p>
+      {{template "_sidebar.html" .}}
 
-                        <hr />
-                        {{.Blog.Content}}
-                        <hr />
-                    </div>
+      <aside class="d-none d-lg-block mt-3 me-xxl-5 col-auto sticky-sidebar">
+        <nav class="w-100 guide-chapters" aria-label="文章列表">
+
+      <ul id="article-nav" class="sidebar-nav mb-0 pb-3 pb-md-2 pe-lg-2 text-body-secondary">
+          {{range $dir, $links := .ArchDirs}}
+          <li class="py-2">
+              <strong class="d-flex w-100 align-items-center fw-semibold">{{$dir}}</strong>
+              <ul class="fw-normal pb-2 small">
+                  {{range $lnk := $links}}
+                  <li>{{$lnk}}</li>
+                  {{end}}
+              </ul>
+          </li>
+          {{end}}
+      </ul>
+
+          </nav>
+      </aside>
+
+        <div class="col ft-guide mt-3 px-lg-3 px-xl-5" data-bs-spy="scroll" data-bs-target="#page-toc" data-bs-offset="0" tabindex="0">
+            <h1 class="post-title">{{.Blog.Meta.Title}}</h1>
+
+            <div class="post-meta">
+                {{if .Blog.Meta.Author}}
+                <div>
+                作者 <img width="32" height="32" alt="{{.Blog.Author.ID}}"
+                    class="post-avatar" src="{{.UrlPre}}/{{.Blog.Author.Avatar}}" />
+                <span class="post-author">{{.Blog.Author.Name}}</span>
+                {{end}}
+                发表于 <span class="post-date">{{.Blog.Meta.Date}}</span>
+                </div>
+                <div>标签 {{$urlpre := .UrlPre}}
+                <span class="tags">{{range $tag := .Blog.Meta.Tags}}
+                    <a class="post-tag" href="{{$urlpre}}/tags/{{$tag}}.html">{{$tag}}</a>
+                {{end}}</span>
                 </div>
             </div>
 
-            <larecipe-back-to-top></larecipe-back-to-top>
+            <div class="post-body">
+            {{.Blog.Content}}
+            <div>
         </div>
 
-        <script src="{{.UrlPre}}/static/js/bundle.js"></script>
-        <script src="{{.UrlPre}}/static/js/app.js"></script>
-        <script src="{{.UrlPre}}/static/js/highlight.js"></script>
-        <script type="text/javascript">
-            loadSidebar("{{.UrlPre}}");
-            hljs.initHighlightingOnLoad();
-        </script>
-    </body>
+    </div>
+</div></main>
+
+<script src="{{.UrlPre}}/static/js/bootstrap.min.js"></script>
+<script src="{{.UrlPre}}/static/js/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>
+(() => {
+    'use strict'
+
+    document.querySelectorAll("#article-nav a.art-link").forEach(element => {
+        let url = element.getAttribute("href")
+        // console.log(url, url.endsWith("{{.Blog.Archive.Url}}"))
+        if (url.endsWith("{{.Blog.Archive.Url}}")) {
+            // element.classList.add("active")
+            element.style.color = "#f97316"
+        }
+    })
+})()
+</script>
+</body>
 </html>

@@ -4,10 +4,13 @@ import (
 	"bytes"
 	"container/list"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/goccy/go-yaml"
+	// "github.com/k0kubun/pp"
 )
 
 const (
@@ -18,14 +21,14 @@ const (
 )
 
 type MetaData struct {
-	Title  string
-	Slug   string
-	Date   string
-	Update string
-	Author string
-	Tags   []string
-	Draft  bool
-	Weight int
+	Title  string   `yaml:"title"`
+	Slug   string   `yaml:"slug,omitempty"`
+	Date   string   `yaml:"date,omitempty"`
+	Update string   `yaml:"update,omitempty"`
+	Author string   `yaml:"author,omitempty"`
+	Tags   []string `yaml:"tags,omitempty"`
+	Draft  bool     `yaml:"draft,omitempty"`
+	Weight int      `yaml:"weight,omitempty"`
 }
 
 type Catelog struct {
@@ -36,7 +39,12 @@ type Catelog struct {
 }
 
 func (c Catelog) GetArchives() []*Link {
-	return c.Site.Archives[c.Start:c.Stop]
+	links := make([]*Link, 0)
+	for i := c.Start; i < c.Stop; i++ {
+		art := c.Site.Articles[i]
+		links = append(links, art.Archive)
+	}
+	return links
 }
 
 func (c Catelog) GetNext() string {
@@ -83,8 +91,9 @@ func (a *Article) SetFormat(ext string) {
 	}
 }
 
-func (a *Article) SetUrl(url string) *Link {
+func (a *Article) SetDirUrl(dir, url string) *Link {
 	a.Archive = &Link{
+		Dir:   dir,
 		Url:   url,
 		Title: a.Meta.Title,
 		Note:  a.Meta.Date,
@@ -109,10 +118,14 @@ func (a *Article) SetData(name string, chunk []byte) int {
 		return 0
 	}
 	if name == "Meta" {
-		ParseConfData([]byte(text), &a.Meta)
+		// fmt.Println(text)
+		if err := yaml.Unmarshal([]byte(text), a.Meta); err != nil {
+			panic(err)
+		}
 		if a.Meta.Author != "" {
 			a.SetDummyAuthor(a.Meta.Author)
 		}
+		// pp.Println(a.Meta)
 	} else {
 		a.Source = text
 	}
@@ -146,7 +159,7 @@ func (a *Article) SplitSource(data []byte, times int) error {
 }
 
 func (a *Article) ParseFile(path string) (string, error) {
-	data, err := ioutil.ReadFile(path)
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return "", err
 	}

@@ -1,9 +1,7 @@
 <div class="sidebar pure-u-1 pure-u-md-1-4">
     {{$urlpre := .UrlPre}}
     <div class="header">
-        <a href="{{.UrlPre}}/index.html"
-            ><h1 class="brand-title">{{.Conf.Title}}</h1></a
-        >
+        <a href="{{.UrlPre}}/index.html"><h1 class="brand-title">{{.Conf.Title}}</h1></a>
         <!--
         <div class="search-wrap">
         <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 451 451">
@@ -16,11 +14,8 @@
             <ul class="nav-list">
                 {{$curr := .Tag}} {{range $tag := .Conf.Top_tags}}
                 <li class="nav-item">
-                    <a
-                        class="pure-button{{if eq $curr $tag }} button-active{{end}}"
-                        href="{{$urlpre}}/tags/{{$tag}}.html"
-                        >{{$tag}}</a
-                    >
+                    <a class="pure-button{{if eq $curr $tag }} button-active{{end}}"
+                        href="{{$urlpre}}/tags/{{$tag}}.html">{{$tag}}</a>
                 </li>
                 {{end}}
             </ul>

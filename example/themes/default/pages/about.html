@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="{{.Conf.Lang}}" class="h-100">
+<head>
+    {{template "_head.html" .}}
+    <title>关于 | {{.Conf.Title}}</title>
+</head>
+<body class="bg-body d-flex flex-column h-100">
+
+{{template "_topbar.html" .}}
+
+<main><div class="container">
+    <div class="row">
+
+        <div class="col ft-guide mt-3 px-lg-3 px-xl-5" data-bs-spy="scroll" data-bs-target="#page-toc" data-bs-offset="0" tabindex="0">
+            <h1 class="post-title">About me</h1>
+
+            <div class="post-body">
+            <p>I am a programmer .</p>
+            </div>
+        </div>
+
+    </div>
+</div></main>
+
+<script src="{{.UrlPre}}/static/js/bootstrap.min.js"></script>
+<script>
+(() => {
+    'use strict'
+
+    document.getElementById('btn-sidebar').style.visibility = "hidden"
+    const channels = document.getElementById('site-channels')
+    channels.querySelectorAll(":scope a.nav-link").forEach(element => {
+        element.classList.remove('active')
+        if (element.getAttribute("href").endsWith("about.html")) {
+            element.classList.add('active')
+        }
+    })
+})()
+</script>
+</body>
+</html>

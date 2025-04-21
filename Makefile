@@ -1,35 +1,46 @@
 SINGLETON = fountain
-COMMANDS =
+COMMANDS  =
+
 
 ifndef GOAMD64
 	GOAMD64 = v2
 endif
-GOOS = $(shell uname -s | tr [A-Z] [a-z])
-ifeq ($(GOOS), darwin)
-	GOBIN = /usr/local/go/bin/go
-	UPXBIN = /usr/local/bin/upx
-else
-	GOBIN = /usr/local/bin/go
-	UPXBIN = /usr/bin/upx
-endif
-RELEASE = -s -w
-GOARGS = GOOS=$(GOOS) GOARCH=amd64 GOAMD64=$(GOAMD64) CGO_ENABLED=1
-GOBUILD = $(GOARGS) $(GOBIN) build -ldflags="$(RELEASE)"
 
-.PHONY: all build clean upx upxx $(SINGLETON) $(COMMANDS)
+GOBIN    = go
+UPXBIN   = upx
+#GOOS    = $(shell uname -s | tr [A-Z] [a-z])
+GOARCH  = $(shell uname -m | tr [A-Z] [a-z])
+ifeq ($(GOARCH), amd64)
+	GOARGS = GOAMD64=$(GOAMD64) CGO_ENABLED=1
+else
+	GOARGS = CGO_ENABLED=0
+endif
+RELEASE  = "-s -w"
+GOBUILD  = $(GOARGS) $(GOBIN) build -ldflags=$(RELEASE)
+BINFILES = $(SINGLETON) $(COMMANDS)
+
+
+.PHONY: all build clean upx upxx $(BINFILES)
+
 all: clean build
+
 $(SINGLETON):
-	@echo "Compile $(SINGLETON) ..."
-	$(GOBUILD) -o $(SINGLETON) *.go
+	@echo "Compile $@ ..."
+	$(GOBUILD) -o ./bin/$@ *.go
+
 $(COMMANDS):
 	@echo "Compile $@ ..."
-	$(GOBUILD) -o $@ ./cmd/$@
-build: $(SINGLETON) $(COMMANDS)
+	$(GOBUILD) -o ./bin/$@ ./cmd/$@
+
+build: $(BINFILES)
 	@echo "Build success."
+
 clean:
-	rm -f $(SINGLETON) $(COMMANDS)
+	rm -f $(BINFILES:%=./bin/%)
 	@echo "Remove old files."
+
 upx: clean build
-	$(UPXBIN) $(SINGLETON) $(COMMANDS)
+	$(UPXBIN) $(BINFILES:%=./bin/%)
+
 upxx: clean build
-	$(UPXBIN) --ultra-brute $(SINGLETON) $(COMMANDS)
+	$(UPXBIN) --ultra-brute $(BINFILES:%=./bin/%)

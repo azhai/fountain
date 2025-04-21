@@ -1,0 +1,15 @@
+title: 某某的故纸堆
+theme: default
+port: 8080
+sort: date
+top_tags: [help, markdown]
+
+authors:
+    john:
+        name: John Doe
+        avatar: static/avatars/john.jpg
+        intro:
+    ryan:
+        name: Ryan Liu
+        avatar: static/avatars/ryan.jpg
+        intro:
