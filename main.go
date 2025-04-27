@@ -97,17 +97,18 @@ func run() {
 	site.InitTheme()
 	site.BuildFiles()
 
-	if serve || port >= 0 {
-		if port == 0 || port > 65535 {
-			port = site.Conf.Port
-		}
-		fmt.Printf("Server at :%d\n", port)
-
-		pudDir := filepath.Join(root, "public")
-		app := fiber.New()
-		app.Use("/", static.New(pudDir))
-		app.Listen(fmt.Sprintf("0.0.0.0:%d", port))
+	if !serve {
+		return
 	}
+	if port == 0 || port > 65535 {
+		port = site.Conf.Port
+	}
+	fmt.Printf("Server at :%d\n", port)
+
+	pudDir := filepath.Join(root, "public")
+	app := fiber.New()
+	app.Use("/", static.New(pudDir))
+	app.Listen(fmt.Sprintf("0.0.0.0:%d", port))
 }
 
 func WithOptions(flags bf2.HTMLFlags) bf2.Option {

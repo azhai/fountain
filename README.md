@@ -5,7 +5,7 @@ Fountain is an static blog generator developed by Golang.
 ## Usage
 
 ```
-./fountain -h
+./bin/fountain -h
 fountain version: v0.6.1
 Usage: fountain [-r root] [-s] [-p port] [-t theme] [-c] [-v]
 
@@ -19,8 +19,8 @@ Options:
   -t string
     	皮肤主题
   -v	输出详情
- 
-./fountain -s -p 8080 -r example/ -t night -c -v
+
+./bin/fountain -s -p 8080 -r example/ -t night -c -v
 ```
 
 ## Windows
@@ -35,9 +35,8 @@ go build -ldflags "-s -w" -o fountain.exe main.go
 
 ## 浅色主题（默认）
 
-![Light theme](./example/themes/default/static/screen.png)
+![Light theme](./example/themes/default/screen.png)
 
 ## 深色主题
 
-![Dark theme](./example/themes/night/static/screen.png)
-
+![Dark theme](./example/themes/night/screen.png)
