@@ -1,12 +1,10 @@
 package article
 
 import (
-	"container/list"
 	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 
 	"github.com/goccy/go-yaml"
 	// "github.com/k0kubun/pp"
@@ -21,7 +19,7 @@ type Website struct {
 	Conf       *Setting
 	Skin       *Theme
 	Convert    func(source []byte, format string) []byte
-	Debug      func(data ...interface{})
+	Debug      func(data ...any)
 }
 
 func NewWebsite(root string) *Website {
@@ -51,20 +49,15 @@ func (w *Website) LoadConfig(path string) error {
 }
 
 func (w *Website) InitTheme() error {
-	theme := "default"
-	if w.Conf.Theme != "" {
-		theme = w.Conf.Theme
-	}
+	theme := w.Conf.GetTheme()
 	themeDir := fmt.Sprintf("themes/%s/", theme)
 	w.Skin = NewTheme(w.Root + themeDir)
 	w.Skin.PubDir = w.Root + w.Conf.Public
 	w.Skin.FunDict["i18n"] = I18n
-	return os.MkdirAll(w.Skin.PubDir, MODE_DIR)
+	return os.MkdirAll(w.Skin.PubDir, DefaultDirMode)
 }
 
-func (w *Website) AddArticle(blog *Article, dir, name string) string {
-	url := dir + "/" + name + ".html"
-	blog.SetDirUrl(dir, url)
+func (w *Website) AddArticle(blog *Article, dir string) error {
 	if authorId := blog.Meta.Author; authorId != "" {
 		if author, ok := w.Conf.Authors[authorId]; ok {
 			blog.Author = author
@@ -75,7 +68,7 @@ func (w *Website) AddArticle(blog *Article, dir, name string) string {
 		w.DirList = append(w.DirList, dir)
 		fullDir := w.Skin.PubDir + dir
 		w.Debug(fullDir + ":")
-		os.MkdirAll(fullDir, MODE_DIR)
+		os.MkdirAll(fullDir, DefaultDirMode)
 	}
 	lnk := blog.Archive.ToString(AddUrlPre(dir))
 	w.DirLinks[dir] = append(w.DirLinks[dir], lnk)
@@ -86,7 +79,7 @@ func (w *Website) AddArticle(blog *Article, dir, name string) string {
 	}
 
 	w.Articles = append(w.Articles, blog)
-	return url
+	return nil
 }
 
 func (w *Website) SortByDate() {
@@ -95,41 +88,20 @@ func (w *Website) SortByDate() {
 	})
 }
 
-func (w *Website) CreateIndex(pageSize int) error {
-	var (
-		err      error
-		catalogs []*Catelog
-		count    = len(w.Articles)
-		url      = "index.html"
-	)
-	lst := list.New()
-	for i := 0; i < count; i += pageSize {
-		if pageNo := i / pageSize; pageNo > 0 {
-			url = fmt.Sprintf("index-%d.html", pageNo)
-		}
-		stop := i + pageSize
-		if stop > count {
-			stop = count
-		}
-		cata := &Catelog{
-			Node:  lst.PushBack(url),
-			Start: i,
-			Stop:  stop,
-		}
-		catalogs = append(catalogs, cata)
+func (w *Website) CreateIndex(pageSize int) (err error) {
+	ctx := Table{"Cata": "", "Tag": ""}
+	if err = w.Prepare("", ctx, true); err != nil {
+		return
 	}
+	catalogs := CreateCatelogs(len(w.Articles), pageSize)
 	for _, cata := range catalogs {
-		cata.Site = w
-		url = cata.Node.Value.(string)
+		url := cata.Node.Value.(string)
 		w.Debug("√", url)
-		ctx := Table{"Cata": cata, "Tag": ""}
-		err = w.Prepare("", ctx, false)
-		if err != nil {
-			return err
-		}
+		cata.Site = w
+		ctx["Cata"] = cata
 		err = w.Skin.Render("index", url, ctx)
 	}
-	return err
+	return
 }
 
 func (w Website) CreateDirs() error {
@@ -138,7 +110,7 @@ func (w Website) CreateDirs() error {
 		url := fmt.Sprintf("%s/index.html", name)
 		w.Debug("√", url)
 		ctx := Table{"Site": w, "Dir": name}
-		err = w.Prepare(name, ctx, false)
+		err = w.Prepare(name, ctx, true)
 		if err != nil {
 			return err
 		}
@@ -147,41 +119,53 @@ func (w Website) CreateDirs() error {
 	return err
 }
 
-func (w Website) CreateTags() error {
-	var err error
-	createDir := true
+func (w Website) CreateTags() (err error) {
+	ctx := Table{"Site": w, "Tag": ""}
+	if err = w.Prepare("tags", ctx, true); err != nil {
+		return
+	}
 	for name := range w.TagIndexes {
 		url := fmt.Sprintf("tags/%s.html", name)
 		w.Debug("√", url)
-		ctx := Table{"Site": w, "Tag": name}
-		err = w.Prepare("tags", ctx, createDir)
-		if err != nil {
-			return err
-		}
-		createDir = false
+		ctx["Tag"] = name
 		err = w.Skin.Render("tag", url, ctx)
 	}
 	return err
 }
 
 func (w Website) GlobPages(thDir string) ([]string, error) {
-	return filepath.Glob(thDir + "pages/*.html")
+	htmlPages, err1 := filepath.Glob(thDir + "pages/*.html")
+	mdPages, err2 := filepath.Glob(thDir + "pages/*.md")
+	if err1 != nil {
+		return mdPages, err2
+	}
+	if err2 != nil {
+		return htmlPages, err1
+	}
+	return append(htmlPages, mdPages...), nil
 }
 
-func (w Website) CreatePages(pages []string, thPrelen int) (err error) {
-	createDir := true
-	for _, p := range pages {
-		url := p[thPrelen:]
+func (w Website) CreatePages(thDir string, thPrelen int) (err error) {
+	ctx := Table{"Site": w, "Tag": ""}
+	if err = w.Prepare("pages", ctx, true); err != nil {
+		return
+	}
+	htmlPages, _ := filepath.Glob(thDir + "pages/*.html")
+	for _, path := range htmlPages {
+		url := path[thPrelen:]
 		w.Debug("√", url)
-		ctx := Table{"Site": w, "Tag": ""}
-		err = w.Prepare("pages", ctx, createDir)
-		if err != nil {
+		err = w.Skin.Render(url, url, ctx)
+	}
+
+	var blog *Article
+	mdPages, _ := filepath.Glob(thDir + "pages/*.md")
+	for _, path := range mdPages {
+		url := path[thPrelen:len(path)-3] + ".html"
+		w.Debug("√", url)
+		if blog, err = w.ProcFile(path, url); err != nil {
 			return
 		}
-		createDir = false
-		if name := filepath.Base(url); strings.HasSuffix(name, ".html") {
-			err = w.Skin.Render(name, url, ctx)
-		}
+		err = w.RenderBlog("channel", blog)
 	}
 	return
 }
@@ -210,18 +194,24 @@ func (w Website) GetTagArchives(name string) []*Link {
 
 func (w Website) Prepare(dir string, cxt Table, createDir bool) (err error) {
 	if createDir {
-		err = os.MkdirAll(w.Skin.PubDir+dir, MODE_DIR)
+		err = os.MkdirAll(w.Skin.PubDir+dir, DefaultDirMode)
 		if err != nil {
 			return
 		}
 	}
 	cxt["Conf"], cxt["Dir"] = w.Conf, dir
+	cxt["Footer"] = w.Conf.GetFooter()
+	cxt["Github"] = w.Conf.Github
 	cxt["UrlPre"] = AddUrlPre(dir)
 	cxt["ArchDirs"] = w.DirLinks
 	return
 }
 
-func (w *Website) RenderFile(tpl, dir, url string, blog *Article) error {
+func (w *Website) RenderBlog(tpl string, blog *Article) error {
+	if blog == nil || blog.Archive == nil {
+		return fmt.Errorf("invalid blog: %v", blog)
+	}
+	dir, url := blog.Archive.Dir, blog.Archive.Url
 	ctx := Table{"Blog": blog, "Tag": ""}
 	err := w.Prepare(dir, ctx, false)
 	if err != nil {
@@ -234,20 +224,23 @@ func (w *Website) RenderFile(tpl, dir, url string, blog *Article) error {
 	return err
 }
 
-func (w *Website) ProcFile(fullpath, path string) error {
+func (w *Website) ProcFile(fullpath, path string) (*Article, error) {
 	blog := NewArticle()
 	name, err := blog.ParseFile(fullpath)
 	if err != nil {
 		w.Debug("ERROR:", err)
-		return err
+		return nil, err
 	}
+
 	source := []byte(blog.Source)
 	content := w.Convert(source, blog.Format)
-	blog.Content = string(content)
+	_ = blog.SplitContent(content)
+
 	dir := filepath.Dir(path)
-	url := w.AddArticle(blog, dir, name)
+	url := dir + "/" + name + ".html"
+	blog.SetDirUrl(dir, url)
 	w.Debug(path, "->", url)
-	return nil
+	return blog, err
 }
 
 func (w *Website) CreateWalkFunc() filepath.WalkFunc {
@@ -269,54 +262,67 @@ func (w *Website) CreateWalkFunc() filepath.WalkFunc {
 			if info.IsDir() {
 				return nil
 			} else {
-				return w.ProcFile(path, path[prelen:])
+				var blog *Article
+				blog, err = w.ProcFile(path, path[prelen:])
+				dir := blog.Archive.Dir
+				err = w.AddArticle(blog, dir)
+				return err
 			}
 		}
 	}
 }
 
 func (w *Website) BuildFiles() error {
-	srcDir := w.Root + w.Conf.Source
-	walkFunc := w.CreateWalkFunc()
-	err := filepath.Walk(srcDir, walkFunc)
-	// pp.Println("Articles", w.Articles)
-	for _, blog := range w.Articles {
-		dir, url := "", ""
-		if blog != nil && blog.Archive != nil {
-			dir, url = blog.Archive.Dir, blog.Archive.Url
-		}
-		w.RenderFile("article", dir, url, blog)
-	}
+	thDir := w.Skin.GetDir()
+	w.Debug("Pages:")
+	err := w.CreatePages(thDir, len(thDir))
 	if err != nil {
 		return err
 	}
+
+	walkFunc := w.CreateWalkFunc()
+	srcDir := w.Root + w.Conf.Source
+	err = filepath.Walk(srcDir, walkFunc)
+	if err != nil {
+		return err
+	}
+	// pp.Println("Articles", w.Articles)
+
+	for _, blog := range w.Articles {
+		err = w.RenderBlog("article", blog)
+		if err != nil {
+			return err
+		}
+	}
+
 	w.Debug("Index:")
 	w.SortByDate()
-	w.CreateIndex(w.Conf.Limit)
+	if err = w.CreateIndex(w.Conf.Limit); err != nil {
+		return err
+	}
 
 	if w.Skin.HasTemplate("dir") {
 		w.Debug("Dirs:")
-		w.CreateDirs()
+		if err = w.CreateDirs(); err != nil {
+			return err
+		}
 	}
 	if w.Skin.HasTemplate("tag") {
 		w.Debug("Tags:")
-		w.CreateTags()
+		if err = w.CreateTags(); err != nil {
+			return err
+		}
 	}
 
-	var pages []string
-	thDir := w.Skin.GetDir()
-	pages, err = w.GlobPages(thDir)
-	if err == nil && len(pages) > 0 {
-		w.Debug("Pages:")
-		w.CreatePages(pages, len(thDir))
+	err = w.Skin.CopyAssets("static")
+	if err != nil {
+		return err
 	}
-
-	w.Skin.CopyAssets("static")
 	if w.Skin.WithSide {
 		// 这个放在复制静态文件之后，可以不用创建目录
 		w.Debug("Static:")
 		path := "static/js/app.js"
-		w.Skin.CreateSidebar(path, w.DirLinks)
+		err = w.Skin.CreateSidebar(path, w.DirLinks)
 		w.Debug("√", path)
 	}
 	return err

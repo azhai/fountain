@@ -1,0 +1,25 @@
+<div class="offcanvas offcanvas-start" tabindex="-1" id="ft-guide-chapters" aria-labelledby="ft-guide-chapters-label" data-bs-theme="dark">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title" id="ft-guide-chapters-label">边栏</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#ft-guide-chapters"></button>
+    </div>
+
+    <div class="offcanvas-body">
+        <nav class="w-100 guide-chapters" aria-label="文章列表">
+
+<ul class="mb-0 pb-3 pb-md-2 pe-lg-2 text-body-secondary">
+    {{range $dir, $links := .ArchDirs}}
+    <li class="py-2">
+        <strong class="d-flex w-100 align-items-center fw-semibold">{{$dir}}</strong>
+        <ul class="fw-normal pb-2 small">
+            {{range $lnk := $links}}
+            <li>{{$lnk}}</li>
+            {{end}}
+        </ul>
+    </li>
+    {{end}}
+</ul>
+
+        </nav>
+    </div>
+</div>

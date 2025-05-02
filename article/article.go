@@ -16,6 +16,8 @@ import (
 const (
 	SEP_META              = "---"
 	SEP_MORE              = "<!--more-->"
+	SEP_OUTLINE           = "<!--outline-->"
+	SEP_SAFE_MODE         = "<!-- raw HTML omitted -->"
 	EXT_MARKDOWN          = ".md"
 	EXT_RESTRUCTURED_TEXT = ".rst"
 )
@@ -36,6 +38,24 @@ type Catelog struct {
 	Node  *list.Element
 	Start int
 	Stop  int
+}
+
+func CreateCatelogs(count, pageSize int) []*Catelog {
+	var catalogs []*Catelog
+	lst, url := list.New(), "index.html"
+	for i := 0; i < count; i += pageSize {
+		if pageNo := i / pageSize; pageNo > 0 {
+			url = fmt.Sprintf("index-%d.html", pageNo)
+		}
+		stop := min(i+pageSize, count)
+		cata := &Catelog{
+			Node:  lst.PushBack(url),
+			Start: i,
+			Stop:  stop,
+		}
+		catalogs = append(catalogs, cata)
+	}
+	return catalogs
 }
 
 func (c Catelog) GetArchives() []*Link {
@@ -72,6 +92,7 @@ type Article struct {
 	Format  string
 	Source  string
 	Content string
+	Outline string
 }
 
 func NewArticle() *Article {
@@ -154,6 +175,20 @@ func (a *Article) SplitSource(data []byte, times int) error {
 		}
 		a.SetData("Source", data[idx:])
 		break
+	}
+	return nil
+}
+
+func (a *Article) SplitContent(data []byte) error {
+	content := strings.TrimSpace(string(data))
+	pieces := strings.SplitN(content, SEP_SAFE_MODE, 2)
+	if len(pieces) != 2 {
+		pieces = strings.SplitN(content, SEP_OUTLINE, 2)
+	}
+	if len(pieces) == 2 {
+		a.Outline, a.Content = pieces[0], pieces[1]
+	} else {
+		a.Content = content
 	}
 	return nil
 }

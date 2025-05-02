@@ -11,14 +11,14 @@
 <main><div class="container">
     <div class="row">
 
-      {{template "_sidebar.html" .}}
+      {{template "_navbar.html" .}}
 
         <div class="col ft-guide mt-3 px-lg-3 px-xl-5" data-bs-spy="scroll" data-bs-target="#page-toc" data-bs-offset="0" tabindex="0">
             <h1 class="post-title">TAG: {{.Tag}}</h1>
-            {{$urlpre := .UrlPre}}
+            {{$pre := .UrlPre}}
             {{range $lnk := .Site.GetTagArchives .Tag}}
             <section class="post">
-                <a href="{{$urlpre}}/{{$lnk.Url}}">
+                <a href="{{$pre}}/{{$lnk.Url}}">
                     <h3 class="item-title">{{$lnk.Title}}</h3>
                 </a>
                 <p class="item-meta">{{$lnk.Note}}</p>

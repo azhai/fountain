@@ -1,10 +1,12 @@
+{{if .Footer}}
 <footer class="border-top theme-bg mt-auto">
     <div class="container row-cols-1 row-cols-sm-2 row-cols-lg-5 py-3 mx-auto">
 
         <div class="col mb-12 text-start text-lg-center">
-            <span class="text-body-secondary">&copy 2025 版权所有</span>
-            <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备2020036654号-9</a>
+            {{if .Footer.Copyright}}<span class="text-body-secondary">&copy; {{if .Footer.From_year}}{{.Footer.From_year}}-{{end}}{{.Footer.Curr_year}} {{.Footer.Copyright}}</span>{{end}}
+            {{if .Footer.Cn_cert_no}}<a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">{{.Footer.Cn_cert_no}}</a>{{end}}
         </div>
 
     </div>
 </footer>
+{{end}}

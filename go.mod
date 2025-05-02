@@ -4,14 +4,13 @@ go 1.23.0
 
 toolchain go1.23.8
 
-replace gopkg.in/russross/blackfriday.v2 => github.com/russross/blackfriday/v2 v2.1.0
-
 require (
 	github.com/goccy/go-yaml v1.17.1
 	github.com/gofiber/fiber/v3 v3.0.0-beta.4
 	github.com/k0kubun/pp v3.0.1+incompatible
 	github.com/kardianos/service v1.2.2
-	gopkg.in/russross/blackfriday.v2 v2.1.0
+	github.com/yuin/goldmark v1.7.11
+	go.abhg.dev/goldmark/toc v0.11.0
 )
 
 require (

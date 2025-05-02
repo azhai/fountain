@@ -8,30 +8,33 @@
 
 {{template "_topbar.html" .}}
 
-<main><div class="container">
-    <div class="row">
+<main>
+    <div class="container">
+        <div class="row">
 
-      {{template "_sidebar.html" .}}
+            {{template "_navbar.html" .}}
 
-        <div class="col ft-guide mt-3 px-lg-3 px-xl-5" data-bs-spy="scroll" data-bs-target="#page-toc" data-bs-offset="0" tabindex="0">
-            {{$urlpre := .UrlPre}}
-            {{range $lnk := .Cata.GetArchives}}
-            <section class="post">
-                <a href="{{$urlpre}}/{{$lnk.Url}}">
-                    <h3 class="item-title">{{$lnk.Title}}</h3>
-                </a>
-                <p class="item-meta">{{$lnk.Note}}</p>
-            </section>
-            {{end}}
+            <div class="col ft-guide mt-3 px-lg-3 px-xl-5" data-bs-spy="scroll" data-bs-target="#page-toc"
+                 data-bs-offset="0" tabindex="0">
+                {{$urlpre := .UrlPre}}
+                {{range $lnk := .Cata.GetArchives}}
+                <section class="post">
+                    <a href="{{$urlpre}}/{{$lnk.Url}}">
+                        <h3 class="item-title">{{$lnk.Title}}</h3>
+                    </a>
+                    <p class="item-meta">{{$lnk.Note}}</p>
+                </section>
+                {{end}}
 
-            <div class="pager" style="text-align:center">
-                <span style="margin:0 10px">{{.Cata.GetPrev}}</span>
-                <span style="margin:0 10px">{{.Cata.GetNext}}</span>
+                <div class="pager" style="text-align:center">
+                    <span style="margin:0 10px">{{.Cata.GetPrev}}</span>
+                    <span style="margin:0 10px">{{.Cata.GetNext}}</span>
+                </div>
             </div>
-        </div>
 
+        </div>
     </div>
-</div></main>
+</main>
 
 {{template "_footer.html" .}}
 

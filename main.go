@@ -1,20 +1,26 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
 	"plugin"
 	"runtime"
-
-	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/middleware/static"
-	"github.com/k0kubun/pp"
-	bf2 "gopkg.in/russross/blackfriday.v2"
+	"strings"
 
 	"fountain/article"
 	"fountain/utils"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/static"
+	"github.com/k0kubun/pp"
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/parser"
+	"github.com/yuin/goldmark/renderer/html"
+	"github.com/yuin/goldmark/text"
+	"go.abhg.dev/goldmark/toc"
 )
 
 const VERSION = "0.6.1"
@@ -26,6 +32,18 @@ var (
 	theme   string // 皮肤主题
 	clean   bool   // 清理旧输出
 	verbose bool   // 输出详情
+
+	md = goldmark.New(
+		goldmark.WithExtensions(extension.GFM),
+		goldmark.WithParserOptions(
+			parser.WithAutoHeadingID(),
+		),
+		goldmark.WithRendererOptions(
+			html.WithHardWraps(),
+			html.WithXHTML(),
+			html.WithUnsafe(),
+		),
+	)
 )
 
 func init() {
@@ -71,16 +89,14 @@ func run() {
 	site.Convert = func(source []byte, format string) []byte {
 		if format == "" {
 			return source
-		} else if format == "markdown" {
-			flags := bf2.CommonHTMLFlags
-			if site.Conf.Theme != "night" {
-				flags = flags | bf2.TOC
-			}
-			return bf2.Run(source, WithOptions(flags))
+		}
+		format = strings.ToLower(format)
+		if format == "markdown" {
+			return MarkdownConvert(source)
 		}
 		return PluginConvert(source, format)
 	}
-	site.Debug = func(data ...interface{}) {
+	site.Debug = func(data ...any) {
 		if verbose {
 			fmt.Println(data...)
 		}
@@ -111,10 +127,20 @@ func run() {
 	app.Listen(fmt.Sprintf("0.0.0.0:%d", port))
 }
 
-func WithOptions(flags bf2.HTMLFlags) bf2.Option {
-	params := bf2.HTMLRendererParameters{Flags: flags}
-	renderer := bf2.NewHTMLRenderer(params)
-	return bf2.WithRenderer(renderer)
+func MarkdownConvert(source []byte) []byte {
+	source = append([]byte(article.SEP_OUTLINE+"\n"), source...)
+	doc := md.Parser().Parse(text.NewReader(source))
+	tree, err := toc.Inspect(doc, source, toc.Compact(true))
+	if err == nil {
+		if list := toc.RenderList(tree); list != nil {
+			doc.InsertBefore(doc, doc.FirstChild(), list)
+		}
+	}
+	var buf bytes.Buffer
+	if err = md.Renderer().Render(&buf, source, doc); err != nil {
+		panic(err)
+	}
+	return buf.Bytes()
 }
 
 func PluginConvert(source []byte, format string) []byte {

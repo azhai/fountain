@@ -31,7 +31,7 @@ type Theme struct {
 func NewTheme(dir string) *Theme {
 	thm := &Theme{
 		dir:     dir,
-		FunDict: make(map[string]interface{}),
+		FunDict: make(map[string]any),
 		TplDict: make(map[string]*template.Template),
 	}
 	thm.WithSide = thm.HasTemplate("sidebar")
@@ -94,7 +94,7 @@ func (t *Theme) Render(name, path string, cxt Table) (err error) {
 	if err != nil {
 		return
 	}
-	file.Chmod(MODE_FILE)
+	file.Chmod(DefaultFileMode)
 	cxt["Path"] = path
 	if !strings.HasSuffix(name, ".html") {
 		path = name + ".html"

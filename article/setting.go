@@ -2,14 +2,16 @@ package article
 
 import (
 	"fmt"
+	"time"
 )
 
 const (
-	MODE_DIR  = 0755
-	MODE_FILE = 0666
+	DefaultDirMode  = 0755
+	DefaultFileMode = 0666
+	DefaultTheme    = "default"
 )
 
-type Table map[string]interface{}
+type Table map[string]any
 
 type Setting struct {
 	Title    string
@@ -21,10 +23,19 @@ type Setting struct {
 	Port     uint
 	Limit    int
 	Sort     string
+	Show_toc bool
 	Top_tags []string
+	Github   string
 	Authors  map[string]*User
+	Footer   *Footer
 	Layout   *Table
-	Github   *Table
+}
+
+type Footer struct {
+	Copyright  string
+	From_year  int
+	Curr_year  int
+	Cn_cert_no string
 }
 
 func NewSetting() *Setting {
@@ -33,13 +44,31 @@ func NewSetting() *Setting {
 		Lang:    "zh",
 		Source:  "source/",
 		Public:  "public/",
-		Theme:   "default",
 		Port:    8080,
 		Limit:   10,
 		Authors: make(map[string]*User),
+		Footer:  new(Footer),
 		Layout:  new(Table),
-		Github:  new(Table),
 	}
+}
+
+func (s *Setting) GetTheme() string {
+	if s.Theme == "" {
+		s.Theme = DefaultTheme
+	}
+	return s.Theme
+}
+
+func (s *Setting) GetFooter() *Footer {
+	if s.Footer == nil {
+		return nil
+	}
+	if s.Footer.Copyright == "" && s.Footer.Cn_cert_no == "" {
+		s.Footer = nil
+	} else {
+		s.Footer.Curr_year = time.Now().Year()
+	}
+	return s.Footer
 }
 
 type User struct {

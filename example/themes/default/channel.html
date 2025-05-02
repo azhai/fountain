@@ -13,10 +13,6 @@
     <div class="container">
         <div class="row">
 
-            {{template "_navbar.html" .}}
-
-            {{template "_sidebar.html" .}}
-
             {{if .Blog.Outline}}
             <div class="col-12 col-lg-auto order-lg-last ft-toc sticky-sidebar mt-1 ms-xxl-5 px-sm-1 text-body-secondary">
                 <button class="btn btn-secondary d-lg-none collapsed ft-page-toc-toggle" type="button"
@@ -43,24 +39,6 @@
                  data-bs-offset="0" tabindex="0">
                 <h1 class="post-title">{{.Blog.Meta.Title}}</h1>
 
-                <div class="post-meta">
-                    <div>
-                        {{if .Blog.Meta.Author}}
-                        作者 <img width="32" height="32" alt="{{.Blog.Author.ID}}"
-                                  class="post-avatar" src="{{.UrlPre}}/{{.Blog.Author.Avatar}}"/>
-                        <span class="post-author">{{.Blog.Author.Name}}</span>
-                        {{end}}
-                        发表于 <span class="post-date">{{.Blog.Meta.Date}}</span>
-                    </div>
-                    {{if .Blog.Meta.Tags}}
-                    <div>标签 {{$pre := .UrlPre}}
-                        <span class="tags">{{range $tag := .Blog.Meta.Tags}}
-                            <a class="post-tag" href="{{$pre}}/tags/{{$tag}}.html">{{$tag}}</a>
-                        {{end}}</span>
-                    </div>
-                    {{end}}
-                </div>
-
                 <div class="post-body">
                     {{.Blog.Content}}
                 <div>
@@ -80,12 +58,12 @@
     (() => {
         'use strict'
 
-        document.querySelectorAll("#article-nav a.art-link").forEach(element => {
-            let url = element.getAttribute("href")
-            // console.log(url, url.endsWith("{{.Blog.Archive.Url}}"))
-            if (url.endsWith("{{.Blog.Archive.Url}}")) {
-                // element.classList.add("active")
-                element.style.color = "#f97316"
+        document.getElementById('btn-sidebar').style.visibility = "hidden"
+        const channels = document.getElementById('site-channels')
+        channels.querySelectorAll(":scope a.nav-link").forEach(element => {
+            element.classList.remove('active')
+            if (element.getAttribute("href").endsWith("{{.Blog.Archive.Url}}")) {
+                element.classList.add('active')
             }
         })
     })()

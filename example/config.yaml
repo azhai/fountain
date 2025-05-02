@@ -2,7 +2,9 @@ title: 某某的故纸堆
 theme: default
 port: 8080
 sort: date
-top_tags: [help, markdown]
+show_toc: true
+top_tags: [php, python]
+github:
 
 authors:
     john:
@@ -13,3 +15,8 @@ authors:
         name: Ryan Liu
         avatar: static/avatars/ryan.jpg
         intro:
+
+footer:
+    copyright:
+    from_year:
+    cn_cert_no:
