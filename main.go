@@ -23,7 +23,7 @@ import (
 	"go.abhg.dev/goldmark/toc"
 )
 
-const VERSION = "0.6.1"
+const VERSION = "1.0.0"
 
 var (
 	serve   bool   // 运行WEB服务
