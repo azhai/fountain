@@ -1,9 +1,9 @@
-<aside class="d-none d-lg-block me-xxl-5 col-auto sticky-sidebar">
+<aside class="d-none d-lg-block me-xxl-5 col-auto">
     <nav class="w-100 guide-chapters" aria-label="文章列表">
 
         <ul id="article-nav" class="sidebar-nav mb-0 pb-3 pb-md-2 pe-lg-2 text-body-secondary">
             {{range $dir, $links := .ArchDirs}}
-            <li class="py-2">
+            <li>
                 <strong class="d-flex w-100 align-items-center fw-semibold">{{$dir}}</strong>
                 <ul class="fw-normal pb-2 small">
                     {{range $lnk := $links}}
