@@ -8,12 +8,10 @@ comments:   true
 weight:     530321
 ---
 
-问题描述
-------------
+## 问题描述
 在一个Zend Framework 2项目，用到同一个MySQL下的几个数据库，甚至不同主机不同种类的数据库。
 
-解决方案
-------------
+## 解决方案
 参考 [How to use multi database with zf2](http://giaule.com/2012/10/24/how-to-use-multi-database-with-zf2/)
 
 将全局的dbAdapter的自动创建，推迟到每个Module的初始化文件中。
