@@ -7,7 +7,7 @@ import (
 	"strings"
 	"text/template"
 
-	"fountain/utils"
+	"github.com/azhai/fountain/utils"
 )
 
 func AddUrlPre(dir string) string {

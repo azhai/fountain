@@ -10,8 +10,8 @@ import (
 	"runtime"
 	"strings"
 
-	"fountain/article"
-	"fountain/utils"
+	"github.com/azhai/fountain/article"
+	"github.com/azhai/fountain/utils"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/static"
 	"github.com/k0kubun/pp"
